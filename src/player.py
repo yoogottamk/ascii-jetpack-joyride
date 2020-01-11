@@ -22,6 +22,12 @@ class Player:
     def get_object(self):
         return self.player
 
+
 class Mandalorian(Player):
     def __init__(self):
-        super().__init__(graphics.MANDALORIAN, [30, 10], col.Fore.BLACK)
+        super().__init__(graphics.MANDALORIAN, [10, 10], col.Fore.BLACK)
+
+
+class Dragon(Player):
+    def __init__(self):
+        super().__init__(graphics.DRAGON, [60, 10], col.Fore.BLACK)
