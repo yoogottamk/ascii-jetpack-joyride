@@ -1,5 +1,5 @@
 """
-A modified version of "https://stackoverflow.com/a/22085679"
+This file contains some frequently used functions
 """
 
 import sys
@@ -16,6 +16,7 @@ def clear():
 class KBHit:
     """
     Class to handle keyboard input
+    A modified version of "https://stackoverflow.com/a/22085679"
     """
 
     def __init__(self):
