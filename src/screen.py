@@ -16,20 +16,20 @@ class Screen:
 
     def clear(self):
         self.display = np.full((self.height, self.width), " ")
-        self.fg = np.full((self.height, self.width), config.fg_col)
-        self.bg = np.full((self.height, self.width), config.bg_col)
+        self.fg = np.full((self.height, self.width), col.Fore.BLACK)
 
     def draw(self, obj):
         x, y = obj.position
-        h, w = obj.shape
+        h, w = obj.height, obj.width
 
-        self.display[y:y+h, x:x+w] = obj.rep
-        self.fg[y:y+h, x:x+w] = obj.color
+        self.display[y:y+h, x:x+w], self.fg[y:y+h, x:x+w] = obj.get_rep()
 
     def show(self):
+        out = col.Back.BLUE
+
         for i in range(self.height):
             for j in range(self.width):
-                sys.stdout.write(self.bg[i][j] + self.fg[i][j] + self.display[i][j])
-            sys.stdout.write("|" + col.Back.RESET + "\n")
+                out += self.fg[i][j] + self.display[i][j]
+            out += "|\n"
 
-        sys.stdout.write(col.Style.RESET_ALL)
+        sys.stdout.write(out + col.Style.RESET_ALL)

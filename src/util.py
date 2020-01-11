@@ -1,5 +1,4 @@
 """
-Class to handle keyboard input
 A modified version of "https://stackoverflow.com/a/22085679"
 """
 
@@ -7,15 +6,18 @@ import sys
 import termios
 import atexit
 from select import select
-import subprocess as sp
 
 def clear():
     """
-    This clears the screen
+    This positions the cursor at (0, 0)
     """
-    sp.call("clear", shell=True)
+    print("\033[0;0H")
 
 class KBHit:
+    """
+    Class to handle keyboard input
+    """
+
     def __init__(self):
         """
         Creates a KBHit object that you can call to do various keyboard things.
@@ -32,11 +34,13 @@ class KBHit:
         # Support normal-terminal reset at exit
         atexit.register(self.set_normal_term)
 
+
     def set_normal_term(self):
         """
         Resets to normal terminal
         """
         termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.old_term)
+
 
     def getch(self):
         """
@@ -45,9 +49,9 @@ class KBHit:
         """
         return sys.stdin.read(1)
 
+
     def kbhit(self):
         """
         Returns True if keyboard character was hit, False otherwise.
         """
-        dr, _, _ = select([sys.stdin], [], [], 0)
-        return dr != []
+        return select([sys.stdin], [], [], 0)[0] != []
