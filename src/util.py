@@ -6,12 +6,33 @@ import sys
 import termios
 import atexit
 from select import select
+import random
+import numpy as np
 
 def clear():
     """
     This positions the cursor at (0, 0)
     """
     print("\033[0;0H")
+
+
+def randint(beg, end):
+    return random.randint(beg, end)
+
+
+def str_to_array(rep):
+    arr = rep.split("\n")[1:-1]
+    maxlen = len(max(arr, key=len))
+
+    return np.array([list(x + (' ' * (maxlen - len(x)))) for x in arr])
+
+
+def tup_to_array(shape, tup):
+    val = np.empty((), dtype=object)
+    val[()] = tup
+
+    return np.full(shape, val, dtype=object)
+
 
 class KBHit:
     """

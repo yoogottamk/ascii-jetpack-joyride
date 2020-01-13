@@ -12,15 +12,15 @@ import config
 
 class Player:
     def __init__(self, rep, position, color):
-        self.player = GameObject.from_string(rep, position=position,
-                velocity=np.array([0., 0.]), force=np.array([0., 0.]),
+        self.player = GameObject.from_string(rep, position=position, \
+                velocity=np.array([0., 0.]), force=np.array([0., 0.]), \
                 gravity=0.5, color=color)
 
     def move(self, key):
         pass
 
     def update(self):
-        self.player.update()
+        return self.player.update()
 
     def get_object(self):
         return self.player
@@ -28,7 +28,9 @@ class Player:
 
 class Mandalorian(Player):
     def __init__(self):
-        super().__init__(graphics.MANDALORIAN, position=np.array([10, config.MAX_HEIGHT]), color=col.Fore.BLACK)
+        super().__init__(graphics.MANDALORIAN, \
+                position=np.array([10, config.MAX_HEIGHT]), \
+                color=(col.Back.YELLOW, col.Fore.BLACK))
         self.controls = ["w", "a", "d"]
 
     def move(self, key):

@@ -8,6 +8,7 @@ import colorama as col
 import sys
 
 import config
+import util
 
 class Screen:
     def __init__(self):
@@ -16,20 +17,32 @@ class Screen:
 
     def clear(self):
         self.display = np.full((self.height, self.width), " ")
-        self.fg = np.full((self.height, self.width), col.Fore.BLACK)
+        self.color = util.tup_to_array((self.height, self.width), (col.Back.BLUE, col.Fore.BLACK))
 
     def draw(self, obj):
         x, y = obj.position
         h, w = obj.height, obj.width
 
-        self.display[y:y+h, x:x+w], self.fg[y:y+h, x:x+w] = obj.get_rep()
+        # TODO: fix this, add correct bounds
+        x = int(x)
+        y = int(y)
+        h = int(h)
+        w = int(w)
+
+        disp, color = obj.get_rep()
+
+        disp = disp[:, max(0, -x):min(config.WIDTH - x, w)]
+        color = color[:, max(0, -x):min(config.WIDTH - x, w)]
+
+        self.display[y:y+h, max(0, x):min(x+w, config.WIDTH)] = disp
+        self.color[y:y+h, max(0, x):min(x+w, config.WIDTH)] = color
 
     def show(self):
-        out = col.Back.BLUE
+        out = ""
 
         for i in range(self.height):
             for j in range(self.width):
-                out += self.fg[i][j] + self.display[i][j]
+                out += "".join(self.color[i][j]) + self.display[i][j]
             out += "\n"
 
         sys.stdout.write(out + col.Style.RESET_ALL)

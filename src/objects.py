@@ -6,6 +6,7 @@ import numpy as np
 import colorama as col
 
 import config
+import util
 
 class GameObject:
     """
@@ -15,7 +16,7 @@ class GameObject:
 
     def __init__(self, rep=np.array([[" "]]), position=np.array([0., 0.]),
                  velocity=np.array([0., 0.]), force=np.array([0., 0.]),
-                 gravity=0, color=np.array([[""]])):
+                 gravity=0, color=np.array([[("", "")]])):
         """
         Constructor for all objects
 
@@ -24,7 +25,7 @@ class GameObject:
             position ([x, y])   : Initial position of the object
             velocity ([vx, vy]) : Speed with which the object moves
             force ([fx, fy])    : Force in both dir
-            gravity (float)       : Gravitational force on that object
+            gravity (float)     : Gravitational force on that object
             color (2D np.array) : Color of each character
         """
         self.rep = rep
@@ -39,6 +40,9 @@ class GameObject:
     def update(self):
         """
         Moves the object according to velocity and gravity applied
+
+        Returns:
+            bool: whether to destroy this object or not
         """
         is_on_ground = self.position[1] + self.height >= \
                         config.MAX_HEIGHT
@@ -61,6 +65,8 @@ class GameObject:
         self.position[0] = int(np.round(np.clip(tmp_pos[0], 0, config.WIDTH - self.width)))
         self.position[1] = int(np.round(np.clip(tmp_pos[1], 0, config.MAX_HEIGHT - self.height)))
 
+        return self.position[0] + self.width >= 0
+
     def get_rep(self):
         """
         Sends the string representation of the object
@@ -71,7 +77,7 @@ class GameObject:
     @staticmethod
     def from_string(rep, position=np.array([0., 0.]),
                     velocity=np.array([0., 0.]), force=np.array([0., 0.]),
-                    gravity=0, color=""):
+                    gravity=0, color=("", "")):
         """
         Creates a GameObject from string
 
@@ -80,17 +86,14 @@ class GameObject:
             position ([x, y])   : Initial position of the object
             velocity ([vx, vy]) : Speed with which the object moves to left
             force ([fx, fy])    : Force in both dir
-            gravity (float)       : Gravitational force on that object
-            color (str)         : Color of each character
+            gravity (float)     : Gravitational force on that object
+            color (str, str)    : Color of each character (bg, fg)
 
         Returns:
             GameObject with all the parameters
         """
-        arr = rep.split("\n")[1:-1]
-        maxlen = len(max(arr, key=len))
-
-        grid = np.array([list(x + (' ' * (maxlen - len(x)))) for x in arr])
-        color = np.full(grid.shape, color)
+        grid = util.str_to_array(rep)
+        color = util.tup_to_array(grid.shape, color)
 
         return GameObject(grid, position, velocity, force, gravity, color)
 
@@ -103,12 +106,11 @@ class GameObject:
 
 class Ground(GameObject):
     def __init__(self):
-        rep = np.full((config.GROUND_HEIGHT, config.WIDTH), " ")
-        color = np.full(rep.shape, col.Back.GREEN)
+        rep = np.full((config.GROUND_HEIGHT, config.WIDTH), ".")
+        color = util.tup_to_array(rep.shape, (col.Back.GREEN, col.Fore.BLACK))
         pos = np.array([0, config.MAX_HEIGHT])
-        print(pos)
 
         super().__init__(rep=rep, position=pos, color=color)
 
     def update(self):
-        pass
+        return True
