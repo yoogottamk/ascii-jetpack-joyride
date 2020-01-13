@@ -8,6 +8,7 @@ import numpy as np
 
 from objects import GameObject
 import graphics
+import config
 
 class Player:
     def __init__(self, rep, position, color):
@@ -27,7 +28,7 @@ class Player:
 
 class Mandalorian(Player):
     def __init__(self):
-        super().__init__(graphics.MANDALORIAN, position=np.array([10, 10]), color=col.Fore.BLACK)
+        super().__init__(graphics.MANDALORIAN, position=np.array([10, config.MAX_HEIGHT]), color=col.Fore.BLACK)
         self.controls = ["w", "a", "d"]
 
     def move(self, key):
@@ -35,7 +36,7 @@ class Mandalorian(Player):
 
         if key in self.controls:
             if key == "w":
-                self.player.velocity[1] -= 3
+                self.player.velocity[1] -= 2
             elif key == "a":
                 self.player.velocity[0] -= 1
             elif key == "d":

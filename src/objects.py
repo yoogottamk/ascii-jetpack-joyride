@@ -3,6 +3,8 @@ This file will contain the generic object file
 """
 
 import numpy as np
+import colorama as col
+
 import config
 
 class GameObject:
@@ -39,10 +41,11 @@ class GameObject:
         Moves the object according to velocity and gravity applied
         """
         is_on_ground = self.position[1] + self.height >= \
-                        config.HEIGHT - config.GROUND_HEIGHT
+                        config.MAX_HEIGHT
 
         # simulate drag
-        self.force[0] = ((-1) ** int(self.velocity[0] >= 0)) * 0.05 * (self.velocity[0] ** 2)
+        self.force[0] = ((-1) ** int(self.velocity[0] >= 0)) *\
+                config.DRAG_CONST * (self.velocity[0] ** 2)
         self.force[1] = self.gravity * int(not is_on_ground)
 
         self.velocity += self.force
@@ -54,11 +57,9 @@ class GameObject:
         if is_on_ground:
             self.velocity[1] = min(0, self.velocity[1])
 
-        print(self.force, self.velocity, (" " * 100))
-
         tmp_pos = self.position + self.velocity
-        self.position[0] = int(np.round(np.clip(tmp_pos[0], 0, config.WIDTH)))
-        self.position[1] = int(np.round(np.clip(tmp_pos[1], 0, config.HEIGHT - config.GROUND_HEIGHT)))
+        self.position[0] = int(np.round(np.clip(tmp_pos[0], 0, config.WIDTH - self.width)))
+        self.position[1] = int(np.round(np.clip(tmp_pos[1], 0, config.MAX_HEIGHT - self.height)))
 
     def get_rep(self):
         """
@@ -89,6 +90,25 @@ class GameObject:
         maxlen = len(max(arr, key=len))
 
         grid = np.array([list(x + (' ' * (maxlen - len(x)))) for x in arr])
-        col = np.full(grid.shape, color)
+        color = np.full(grid.shape, color)
 
-        return GameObject(grid, position, velocity, force, gravity, col)
+        return GameObject(grid, position, velocity, force, gravity, color)
+
+    def get_object(self):
+        """
+        Added for compatibility with derived classes
+        """
+        return self
+
+
+class Ground(GameObject):
+    def __init__(self):
+        rep = np.full((config.GROUND_HEIGHT, config.WIDTH), " ")
+        color = np.full(rep.shape, col.Back.GREEN)
+        pos = np.array([0, config.MAX_HEIGHT])
+        print(pos)
+
+        super().__init__(rep=rep, position=pos, color=color)
+
+    def update(self):
+        pass

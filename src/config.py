@@ -12,8 +12,9 @@ HEIGHT = SCREEN_HEIGHT - 5
 
 GROUND_HEIGHT = 5
 
-#WIDTH = int(SCREEN_WIDTH / 2)
-#HEIGHT = int(SCREEN_HEIGHT / 1.5)
+MAX_HEIGHT = HEIGHT - GROUND_HEIGHT
+
+DRAG_CONST = 0.05
 
 # default colors
 bg_col = col.Back.BLUE

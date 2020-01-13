@@ -30,6 +30,6 @@ class Screen:
         for i in range(self.height):
             for j in range(self.width):
                 out += self.fg[i][j] + self.display[i][j]
-            out += "|\n"
+            out += "\n"
 
         sys.stdout.write(out + col.Style.RESET_ALL)
