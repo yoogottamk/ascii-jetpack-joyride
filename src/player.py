@@ -13,7 +13,7 @@ import config
 class Player:
     def __init__(self, rep, position, color):
         self.player = GameObject.from_string(rep, position=position, \
-                velocity=np.array([0., 0.]), force=np.array([0., 0.]), \
+                velocity=np.array([0., 0.]), accel=np.array([0., 0.]), \
                 gravity=0.5, color=color)
 
     def move(self, key):

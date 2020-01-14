@@ -15,7 +15,7 @@ class GameObject:
     """
 
     def __init__(self, rep=np.array([[" "]]), position=np.array([0., 0.]),
-                 velocity=np.array([0., 0.]), force=np.array([0., 0.]),
+                 velocity=np.array([0., 0.]), accel=np.array([0., 0.]),
                  gravity=0, color=np.array([[("", "")]])):
         """
         Constructor for all objects
@@ -24,14 +24,14 @@ class GameObject:
             rep (2D np.array)   : The object representation (How does it look?)
             position ([x, y])   : Initial position of the object
             velocity ([vx, vy]) : Speed with which the object moves
-            force ([fx, fy])    : Force in both dir
-            gravity (float)     : Gravitational force on that object
+            accel ([fx, fy])    : accel in both dir
+            gravity (float)     : Gravitational accel on that object
             color (2D np.array) : Color of each character
         """
         self.rep = rep
         self.position = position
         self.velocity = velocity
-        self.force = force
+        self.accel = accel
         self.gravity = gravity
         self.width = self.rep.shape[1]
         self.height = self.rep.shape[0]
@@ -48,11 +48,11 @@ class GameObject:
                         config.MAX_HEIGHT
 
         # simulate drag
-        self.force[0] = ((-1) ** int(self.velocity[0] >= 0)) *\
+        self.accel[0] = ((-1) ** int(self.velocity[0] >= 0)) *\
                 config.DRAG_CONST * (self.velocity[0] ** 2)
-        self.force[1] = self.gravity * int(not is_on_ground)
+        self.accel[1] = self.gravity * int(not is_on_ground)
 
-        self.velocity += self.force
+        self.velocity += self.accel
 
         # if is colliding with roof
         if self.position[1] == 0:
@@ -76,7 +76,7 @@ class GameObject:
 
     @staticmethod
     def from_string(rep, position=np.array([0., 0.]),
-                    velocity=np.array([0., 0.]), force=np.array([0., 0.]),
+                    velocity=np.array([0., 0.]), accel=np.array([0., 0.]),
                     gravity=0, color=("", "")):
         """
         Creates a GameObject from string
@@ -85,8 +85,8 @@ class GameObject:
             rep (2D np.array)   : The object representation (How does it look?)
             position ([x, y])   : Initial position of the object
             velocity ([vx, vy]) : Speed with which the object moves to left
-            force ([fx, fy])    : Force in both dir
-            gravity (float)     : Gravitational force on that object
+            accel ([fx, fy])    : accel in both dir
+            gravity (float)     : Gravitational accel on that object
             color (str, str)    : Color of each character (bg, fg)
 
         Returns:
@@ -95,7 +95,7 @@ class GameObject:
         grid = util.str_to_array(rep)
         color = util.tup_to_array(grid.shape, color)
 
-        return GameObject(grid, position, velocity, force, gravity, color)
+        return GameObject(grid, position, velocity, accel, gravity, color)
 
     def get_object(self):
         """
