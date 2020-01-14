@@ -9,6 +9,8 @@ from select import select
 import random
 import numpy as np
 
+import config
+
 def clear():
     """
     This positions the cursor at (0, 0)

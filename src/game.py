@@ -30,6 +30,9 @@ class Game:
         self.screen = Screen()
         self.player = Mandalorian()
         self.ground = Ground()
+        self.score = 0
+        self.lives = config.INIT_LIVES
+        self.time = 0
 
         # draw in this order
         self.objects = {
@@ -54,6 +57,9 @@ class Game:
 
         while True:
             time.sleep(config.DELAY)
+            self.time += config.DELAY
+            self.score += 10 * config.DELAY
+
             tmp_obj = {
                 "background": [],
                 "obstacles": [],
@@ -90,9 +96,13 @@ class Game:
 
             self.objects = tmp_obj
 
-            #self.show_score()
-
+            self.show_score()
             self.screen.show()
+
+    def show_score(self):
+        print(f"Score: {int(self.score)}")
+        print(f"Time: {self.time:.2f}")
+        print(f"Lives: {self.lives}")
 
     def __del__(self):
         #util.clear()

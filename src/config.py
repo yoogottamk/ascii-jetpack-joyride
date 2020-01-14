@@ -8,10 +8,11 @@ import colorama as col
 SCREEN_HEIGHT, SCREEN_WIDTH = [int(x) for x in os.popen("stty size", "r").read().split()]
 
 WIDTH = SCREEN_WIDTH - 10
-HEIGHT = SCREEN_HEIGHT - 3
+HEIGHT = SCREEN_HEIGHT - 5
 
 GROUND_HEIGHT = 5
 
+MIN_HEIGHT = SCOREBOARD_HEIGHT = 3
 MAX_HEIGHT = HEIGHT - GROUND_HEIGHT
 
 DRAG_CONST = 0.05
@@ -30,3 +31,5 @@ FIREBEAM_MAX = 4
 
 DEBUG = True
 DEBUG_ALL = False
+
+INIT_LIVES = 3
