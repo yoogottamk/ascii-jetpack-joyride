@@ -48,7 +48,8 @@ class Game:
         self.colliders = [
             ("obstacles", "player"),
             ("player", "coins"),
-            ("player_bullet", "obstacles")
+            ("player_bullet", "obstacles"),
+            ("obstacles", "player_bullet")
         ]
 
     def clear(self):
@@ -98,9 +99,9 @@ class Game:
 
                 self.player.move(_ch)
 
-            self.detect_collisions()
-
             self.clear()
+
+            self.detect_collisions()
 
             for obj_type in self.objects:
                 for obj in self.objects[obj_type]:
@@ -126,9 +127,25 @@ class Game:
         Detects collision between various objects
         """
         for pairs in self.colliders:
-            for hitter in pairs[0]:
-                for target in pairs[1]:
-                    pass
+            for hitter in self.objects[pairs[0]]:
+                for target in self.objects[pairs[1]]:
+                    obj_h = hitter.get_object()
+                    obj_t = target.get_object()
+
+                    pos_h = obj_h.position
+                    pos_t = obj_t.position
+
+                    minx = min(pos_h[0], pos_t[0])
+                    maxx = max(pos_h[0] + obj_h.width, pos_t[0] + obj_t.width)
+
+                    miny = min(pos_h[1], pos_t[1])
+                    maxy = max(pos_h[1] + obj_h.height, pos_t[1] + obj_t.height)
+
+                    if maxx - minx >= obj_h.width + obj_t.width \
+                            or maxy - miny >= obj_h.height + obj_t.height:
+                        continue
+
+                    obj_t.destroy()
 
     def __del__(self):
         #util.clear()
