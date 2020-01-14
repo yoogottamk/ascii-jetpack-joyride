@@ -105,7 +105,14 @@ class GameObject:
 
 
 class Ground(GameObject):
+    """
+    This is the class for Ground
+    """
+
     def __init__(self):
+        """
+        Constructor for Ground
+        """
         rep = np.full((config.GROUND_HEIGHT, config.WIDTH), ".")
         color = util.tup_to_array(rep.shape, (col.Back.GREEN, col.Fore.BLACK))
         pos = np.array([0, config.MAX_HEIGHT])
@@ -113,4 +120,10 @@ class Ground(GameObject):
         super().__init__(rep=rep, position=pos, color=color)
 
     def update(self):
+        """
+        Updates the ground
+
+        Returns:
+            bool : Should the ground be drawn in the next frame? (YES!)
+        """
         return True

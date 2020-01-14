@@ -31,21 +31,21 @@ class Screen:
         """
         This function places an object on the frame
         """
-        x, y = obj.position
-        h, w = obj.height, obj.width
+        _x, _y = obj.position
+        _h, _w = obj.height, obj.width
 
-        x = int(x)
-        y = int(y)
-        h = int(h)
-        w = int(w)
+        _x = int(_x)
+        _y = int(_y)
+        _h = int(_h)
+        _w = int(_w)
 
         disp, color = obj.get_rep()
 
-        disp = disp[:, max(0, -x):min(config.WIDTH - x, w)]
-        color = color[:, max(0, -x):min(config.WIDTH - x, w)]
+        disp = disp[:, max(0, -_x):min(config.WIDTH - _x, _w)]
+        color = color[:, max(0, -_x):min(config.WIDTH - _x, _w)]
 
-        self.display[y:y+h, max(0, x):min(x+w, config.WIDTH)] = disp
-        self.color[y:y+h, max(0, x):min(x+w, config.WIDTH)] = color
+        self.display[_y:_y+_h, max(0, _x):min(_x+_w, config.WIDTH)] = disp
+        self.color[_y:_y+_h, max(0, _x):min(_x+_w, config.WIDTH)] = color
 
     def show(self):
         """

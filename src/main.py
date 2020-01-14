@@ -9,5 +9,4 @@ from game import Game
 if __name__ == "__main__":
     col.init()
 
-    game = Game()
-    game.start()
+    Game().start()

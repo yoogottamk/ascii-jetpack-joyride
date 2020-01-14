@@ -3,21 +3,26 @@ This file contains the code which runs the game
 """
 
 import time
-import colorama as col
 import numpy as np
 
 from screen import Screen
-from player import Mandalorian, Dragon
+from player import Mandalorian#, Dragon
 from objects import Ground
 from obstacles import FireBeam
 from coins import Coins
 
 import config
 import util
-import graphics
 
 class Game:
+    """
+    This class manages the whole Game
+    """
+
     def __init__(self):
+        """
+        Constructor for the Game
+        """
         self.screen = Screen()
         self.player = Mandalorian()
         self.ground = Ground()
@@ -31,10 +36,16 @@ class Game:
         }
 
     def clear(self):
+        """
+        Clears the screen and the frame
+        """
         self.screen.clear()
         util.clear()
 
     def start(self):
+        """
+        Starts the game
+        """
         kb_inp = util.KBHit()
 
         while True:
@@ -47,17 +58,24 @@ class Game:
             }
 
             if kb_inp.kbhit():
-                ch = kb_inp.getch()
+                _ch = kb_inp.getch()
                 #kb_inp.clear()
 
-                if ch == "q":
+                if _ch == "q":
                     break
-                if ch == "1":
-                    self.objects["obstacles"].append(FireBeam(np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 6)], dtype='float64')))
-                elif ch == "2":
-                    self.objects["coins"].append(Coins(np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 4)], dtype='float64'), np.array([3, util.randint(3, 10)])))
+                if _ch == "1":
+                    self.objects["obstacles"].append( \
+                            FireBeam( \
+                                np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 6)], \
+                                    dtype='float64')))
+                elif _ch == "2":
+                    self.objects["coins"].append( \
+                            Coins( \
+                                np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 4)], \
+                                    dtype='float64'),
+                                np.array([3, util.randint(3, 10)])))
 
-                self.player.move(ch)
+                self.player.move(_ch)
 
             self.clear()
 
