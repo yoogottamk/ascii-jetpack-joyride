@@ -10,6 +10,7 @@ from player import Mandalorian#, Dragon
 from objects import Ground
 from obstacles import FireBeam
 from coins import Coins
+from bullets import MandalorianBullet
 
 import config
 import util
@@ -34,13 +35,21 @@ class Game:
         self.lives = config.INIT_LIVES
         self.init_time = time.time()
 
-        # draw in this order
+        # seperate them into different classes
         self.objects = {
             "background": [self.ground],
             "obstacles": [],
-            "top_level": [self.player],
+            "player": [self.player],
+            "player_bullet": [],
             "coins": []
         }
+
+        # convention is x -> target
+        self.colliders = [
+            ("obstacles", "player"),
+            ("player", "coins"),
+            ("player_bullet", "obstacles")
+        ]
 
     def clear(self):
         """
@@ -62,7 +71,8 @@ class Game:
             tmp_obj = {
                 "background": [],
                 "obstacles": [],
-                "top_level": [],
+                "player": [],
+                "player_bullet": [],
                 "coins": []
             }
 
@@ -71,19 +81,24 @@ class Game:
 
                 if _ch == "q":
                     break
-                if _ch == "1":
-                    self.objects["obstacles"].append( \
-                            FireBeam( \
+                if _ch == config.MANDALORIAN_BULLET_CHAR:
+                    self.objects["player_bullet"].append(MandalorianBullet(self.player.get_object().position + np.array([2., 0.])))
+
+                if config.DEBUG:
+                    if _ch == "1":
+                        self.objects["obstacles"].append(FireBeam( \
                                 np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 6)], \
                                     dtype='float64')))
-                elif _ch == "2":
-                    self.objects["coins"] += \
-                            Coins( \
-                                np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 4)], \
-                                    dtype='float64'),
-                                np.array([3, util.randint(3, 10)])).get_items()
+                    elif _ch == "2":
+                        self.objects["coins"] += \
+                                Coins( \
+                                    np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 4)], \
+                                        dtype='float64'),
+                                    np.array([3, util.randint(3, 10)])).get_items()
 
                 self.player.move(_ch)
+
+            self.detect_collisions()
 
             self.clear()
 
@@ -99,9 +114,21 @@ class Game:
             self.screen.show()
 
     def show_score(self):
+        """
+        Prints the scoreboard
+        """
         print(f"Score: {int(self.score)}")
         print(f"Time: {time.time() - self.init_time:.2f}")
         print(f"Lives: {self.lives}")
+
+    def detect_collisions(self):
+        """
+        Detects collision between various objects
+        """
+        for pairs in self.colliders:
+            for hitter in pairs[0]:
+                for target in pairs[1]:
+                    pass
 
     def __del__(self):
         #util.clear()

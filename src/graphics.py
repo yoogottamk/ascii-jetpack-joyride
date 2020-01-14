@@ -115,3 +115,7 @@ FIREBEAM = [
 *
 """
 ]
+
+MANDALORIAN_BULLET = r"""
+>---->
+"""

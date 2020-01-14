@@ -65,8 +65,8 @@ class Mandalorian(Player):
         Constructor for the Mandalorian
         """
         super().__init__(graphics.MANDALORIAN, \
-                position=np.array([10, config.MAX_HEIGHT]), \
-                color=(col.Back.YELLOW, col.Fore.BLACK))
+                position=np.array([10, config.MAX_HEIGHT], dtype='float64'), \
+                color=(col.Back.BLUE, col.Fore.BLACK))
         self.controls = ["w", "a", "d"]
 
     def move(self, key):

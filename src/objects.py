@@ -110,6 +110,12 @@ class GameObject:
         """
         self.color = color
 
+    def destroy(self):
+        """
+        Marks this object for destruction
+        """
+        self.active = False
+
     def __del__(self):
         """
         For debugging
