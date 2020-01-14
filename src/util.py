@@ -17,10 +17,30 @@ def clear():
 
 
 def randint(beg, end):
+    """
+    This function returns a random integer between beg and end [inclusive]
+
+    Args:
+        beg (int) : lower limit of the random number
+        end (int) : upper limit of the random number
+
+    Returns:
+        int       : A random number in the range [beg, end]
+    """
     return random.randint(beg, end)
 
 
 def str_to_array(rep):
+    """
+    This function returns a 2D np.array, which contains each character of
+    the string rep
+
+    Args:
+        rep (string) : The string which has to be converted
+
+    Returns:
+        2D np.array  : Space padded array
+    """
     arr = rep.split("\n")[1:-1]
     maxlen = len(max(arr, key=len))
 
@@ -28,6 +48,17 @@ def str_to_array(rep):
 
 
 def tup_to_array(shape, tup):
+    """
+    This function returns a 2D np.array, with the given shape, all elements
+    initialized with the tuple tup
+
+    Args:
+        shape (nrows, ncols) : Shape of the 2D np.array
+        tup (tuple)          : Tuple which is used to initialize the array
+
+    Returns:
+        2D np.array          : Array with all elements = tup
+    """
     val = np.empty((), dtype=object)
     val[()] = tup
 
@@ -64,7 +95,8 @@ class KBHit:
         termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.old_term)
 
 
-    def getch(self):
+    @staticmethod
+    def getch():
         """
         Returns a keyboard character after kbhit() has been called.
         Should not be called in the same program as getarrow().
@@ -72,8 +104,16 @@ class KBHit:
         return sys.stdin.read(1)
 
 
-    def kbhit(self):
+    @staticmethod
+    def kbhit():
         """
         Returns True if keyboard character was hit, False otherwise.
         """
         return select([sys.stdin], [], [], 0)[0] != []
+
+    @staticmethod
+    def clear():
+        """
+        Clears the input buffer
+        """
+        termios.tcflush(sys.stdin, termios.TCIFLUSH)

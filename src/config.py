@@ -17,13 +17,13 @@ MAX_HEIGHT = HEIGHT - GROUND_HEIGHT
 DRAG_CONST = 0.05
 
 # default colors
-bg_col = col.Back.BLUE
-fg_col = col.Fore.BLACK
+BG_COL = col.Back.BLUE
+FG_COL = col.Fore.BLACK
 
-bg_ground = col.Back.GREEN
+BG_GROUND = col.Back.GREEN
 
 # delay bw frame updates
-delay = 0.05
+DELAY = 0.05
 
 # FireBeam orientations
 FIREBEAM_MAX = 4
