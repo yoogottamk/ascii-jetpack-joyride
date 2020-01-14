@@ -32,7 +32,7 @@ class Game:
         self.ground = Ground()
         self.score = 0
         self.lives = config.INIT_LIVES
-        self.time = 0
+        self.init_time = time.time()
 
         # draw in this order
         self.objects = {
@@ -57,7 +57,6 @@ class Game:
 
         while True:
             time.sleep(config.DELAY)
-            self.time += config.DELAY
             self.score += 10 * config.DELAY
 
             tmp_obj = {
@@ -101,7 +100,7 @@ class Game:
 
     def show_score(self):
         print(f"Score: {int(self.score)}")
-        print(f"Time: {self.time:.2f}")
+        print(f"Time: {time.time() - self.init_time:.2f}")
         print(f"Lives: {self.lives}")
 
     def __del__(self):
