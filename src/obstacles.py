@@ -37,7 +37,7 @@ class Obstacle(GameObject):
         """
         self.position += self.velocity
 
-        return self.position[0] + self.width >= 0
+        return self.active and self.position[0] + self.width >= 0
 
 
 class FireBeam(Obstacle):

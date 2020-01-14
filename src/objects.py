@@ -36,6 +36,7 @@ class GameObject:
         self.width = self.rep.shape[1]
         self.height = self.rep.shape[0]
         self.color = color
+        self.active = True
 
     def update(self):
         """
@@ -65,7 +66,7 @@ class GameObject:
         self.position[0] = int(np.round(np.clip(tmp_pos[0], 0, config.WIDTH - self.width)))
         self.position[1] = int(np.round(np.clip(tmp_pos[1], 0, config.MAX_HEIGHT - self.height)))
 
-        return self.position[0] + self.width >= 0
+        return self.active and self.position[0] + self.width >= 0
 
     def get_rep(self):
         """
@@ -102,6 +103,12 @@ class GameObject:
         Added for compatibility with derived classes
         """
         return self
+
+    def set_color(self, color):
+        """
+        Changes the color
+        """
+        self.color = color
 
     def __del__(self):
         """
