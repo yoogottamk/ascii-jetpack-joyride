@@ -10,6 +10,7 @@ from screen import Screen
 from player import Mandalorian, Dragon
 from objects import Ground
 from obstacles import FireBeam
+from coins import Coins
 
 import config
 import util
@@ -22,9 +23,12 @@ class Game:
         self.ground = Ground()
 
         # draw in this order
-        self.background = [self.ground]
-        self.obstacles = []
-        self.top_level = [self.player]
+        self.objects = {
+            "background": [self.ground],
+            "obstacles": [],
+            "top_level": [self.player],
+            "coins": []
+        }
 
     def clear(self):
         self.screen.clear()
@@ -34,28 +38,36 @@ class Game:
         kb_inp = util.KBHit()
 
         while True:
-            time.sleep(config.delay)
-            tmp_obj = []
+            time.sleep(config.DELAY)
+            tmp_obj = {
+                "background": [],
+                "obstacles": [],
+                "top_level": [],
+                "coins": []
+            }
 
             if kb_inp.kbhit():
                 ch = kb_inp.getch()
+                #kb_inp.clear()
 
                 if ch == "q":
                     break
                 if ch == "1":
-                    self.obstacles.append(FireBeam(np.array([config.WIDTH - 5., config.HEIGHT - 10.])))
+                    self.objects["obstacles"].append(FireBeam(np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 6)], dtype='float64')))
+                elif ch == "2":
+                    self.objects["coins"].append(Coins(np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 4)], dtype='float64'), np.array([3, util.randint(3, 10)])))
 
                 self.player.move(ch)
 
             self.clear()
 
-            for classes in [self.background, self.obstacles, self.top_level]:
-                for obj in classes:
+            for obj_type in self.objects:
+                for obj in self.objects[obj_type]:
                     if obj.update():
                         self.screen.draw(obj.get_object())
-                        tmp_obj.append(obj)
+                        tmp_obj[obj_type].append(obj)
 
-            self.active_objects = tmp_obj
+            self.objects = tmp_obj
 
             self.screen.show()
 
