@@ -23,6 +23,10 @@ class Game:
         """
         Constructor for the Game
         """
+
+        # hide the cursor
+        print("\033[?25l", end='')
+
         self.screen = Screen()
         self.player = Mandalorian()
         self.ground = Ground()
@@ -59,7 +63,6 @@ class Game:
 
             if kb_inp.kbhit():
                 _ch = kb_inp.getch()
-                #kb_inp.clear()
 
                 if _ch == "q":
                     break
@@ -69,11 +72,11 @@ class Game:
                                 np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 6)], \
                                     dtype='float64')))
                 elif _ch == "2":
-                    self.objects["coins"].append( \
+                    self.objects["coins"] += \
                             Coins( \
                                 np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 4)], \
                                     dtype='float64'),
-                                np.array([3, util.randint(3, 10)])))
+                                np.array([3, util.randint(3, 10)])).get_items()
 
                 self.player.move(_ch)
 
@@ -87,10 +90,12 @@ class Game:
 
             self.objects = tmp_obj
 
+            #self.show_score()
+
             self.screen.show()
 
     def __del__(self):
         #util.clear()
         #print(col.Style.RESET_ALL)
         #print(graphics.BYE)
-        pass
+        print("\033[?25h")

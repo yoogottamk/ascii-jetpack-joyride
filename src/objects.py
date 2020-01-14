@@ -108,7 +108,7 @@ class GameObject:
         For debugging
         """
         if config.DEBUG_ALL:
-            print(self.__class__.__name__)
+            print("Destroyed", self.__class__.__name__)
 
 
 class Ground(GameObject):
