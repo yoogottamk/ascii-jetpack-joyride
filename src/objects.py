@@ -103,6 +103,13 @@ class GameObject:
         """
         return self
 
+    def __del__(self):
+        """
+        For debugging
+        """
+        if config.DEBUG_ALL:
+            print(self.__class__.__name__)
+
 
 class Ground(GameObject):
     """

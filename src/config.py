@@ -27,3 +27,6 @@ DELAY = 0.05
 
 # FireBeam orientations
 FIREBEAM_MAX = 4
+
+DEBUG = True
+DEBUG_ALL = False
