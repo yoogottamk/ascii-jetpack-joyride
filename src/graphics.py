@@ -3,8 +3,8 @@ This file will contain all the display strings
 """
 
 MANDALORIAN = r"""
-\o/
-[ ]
+ 0
+~|~
 / \
 """
 
