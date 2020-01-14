@@ -32,6 +32,6 @@ class FireBeam(Obstacle):
         for i in range(rep.shape[0]):
             for j in range(rep.shape[1]):
                 if rep[i][j] == " ":
-                    color[i][j] = (config.bg_col, col.Fore.YELLOW)
+                    color[i][j] = (config.BG_COL, col.Fore.YELLOW)
 
         super().__init__(rep, position, np.array([-2., 0.]), color)
