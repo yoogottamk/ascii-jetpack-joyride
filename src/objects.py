@@ -94,7 +94,7 @@ class GameObject:
             GameObject with all the parameters
         """
         grid = util.str_to_array(rep)
-        color = util.tup_to_array(grid.shape, color)
+        color = util.mask(grid, util.tup_to_array(grid.shape, color))
 
         return GameObject(grid, position, velocity, accel, gravity, color)
 

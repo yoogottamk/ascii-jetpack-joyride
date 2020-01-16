@@ -59,11 +59,4 @@ class FireBeam(Obstacle):
         rep = util.str_to_array(graphics.FIREBEAM[orientation])
         color = util.tup_to_array(rep.shape, (col.Back.RED, col.Fore.YELLOW))
 
-        max_i, max_j = rep.shape
-
-        for i in range(max_i):
-            for j in range(max_j):
-                if rep[i][j] == " ":
-                    color[i][j] = (config.BG_COL, col.Fore.YELLOW)
-
-        super().__init__(rep, position, np.array([-2., 0.]), color)
+        super().__init__(rep, position, np.array([-2., 0.]), util.mask(rep, color))

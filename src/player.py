@@ -15,7 +15,7 @@ class Player:
     This is the base class for all "Players": Mandalorian, Dragon
     """
 
-    def __init__(self, rep, position, color):
+    def __init__(self, rep, position, gravity, color):
         """
         Constructor for Player
 
@@ -24,9 +24,9 @@ class Player:
             position [px, py] : Initial position of the Player
             color (bg, fg)    : Colors of the player
         """
-        self.player = GameObject.from_string(rep, position=position, \
-                velocity=np.array([0., 0.]), accel=np.array([0., 0.]), \
-                gravity=0.5, color=color)
+        self.player = GameObject.from_string(rep, position, \
+                np.array([0., 0.]), np.array([0., 0.]), \
+                gravity, color)
 
     def move(self, key):
         """
@@ -66,7 +66,7 @@ class Mandalorian(Player):
         """
         super().__init__(graphics.MANDALORIAN, \
                 position=np.array([10, config.MAX_HEIGHT], dtype='float64'), \
-                color=(col.Back.BLUE, col.Fore.BLACK))
+                gravity=0.5, color=(col.Back.BLUE, col.Fore.BLACK))
         self.controls = ["w", "a", "d"]
 
     def move(self, key):
@@ -87,13 +87,13 @@ class Mandalorian(Player):
                 self.player.velocity[0] += 1
 
 
-class Dragon(Player):
+class DragonBoss(Player):
     """
-    This class is for managing the Dragon
+    This class is for managing the Dragon Boss enemy
     """
 
     def __init__(self):
         """
         Constructor for the Dragon
         """
-        super().__init__(graphics.DRAGON, position=np.array([60, 10]), color=col.Fore.BLACK)
+        super().__init__(graphics.DRAGON, position=np.array([config.WIDTH - 20, 0]), gravity=0, color=(col.Back.RED, col.Fore.BLACK))

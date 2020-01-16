@@ -25,7 +25,7 @@ class Screen:
         This function clears the current frame
         """
         self.display = np.full((self.height, self.width), " ")
-        self.color = util.tup_to_array((self.height, self.width), (col.Back.BLUE, col.Fore.BLACK))
+        self.color = util.tup_to_array((self.height, self.width), (config.BG_COL, config.FG_COL))
 
     def draw(self, obj):
         """

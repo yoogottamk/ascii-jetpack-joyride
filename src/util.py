@@ -67,6 +67,27 @@ def tup_to_array(shape, tup):
     return np.full(shape, val, dtype=object)
 
 
+def mask(rep, color):
+    """
+    Masks the color array, only applying color on nonspace
+
+    Args:
+        rep (2D np.array)   : How does the object look
+        color (2D np.array) : The color array
+
+    Returns:
+        2D np.array : space color set to bg
+    """
+    max_i, max_j = rep.shape
+
+    for i in range(max_i):
+        for j in range(max_j):
+            if rep[i][j] == " ":
+                color[i][j] = (config.BG_COL, config.FG_COL)
+
+    return color
+
+
 class KBHit:
     """
     Class to handle keyboard input

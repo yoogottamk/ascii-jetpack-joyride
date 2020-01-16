@@ -6,7 +6,7 @@ import time
 import numpy as np
 
 from screen import Screen
-from player import Mandalorian#, Dragon
+from player import Mandalorian, DragonBoss
 from objects import Ground
 from obstacles import FireBeam
 from coins import Coins
@@ -31,6 +31,7 @@ class Game:
         self.screen = Screen()
         self.player = Mandalorian()
         self.ground = Ground()
+        self.dragon = DragonBoss()
         self.score = 0
         self.lives = config.INIT_LIVES
         self.init_time = time.time()
@@ -40,16 +41,21 @@ class Game:
             "background": [self.ground],
             "obstacles": [],
             "player": [self.player],
+            "boss": [],
+            "boss_bullet": [],
             "player_bullet": [],
             "coins": []
         }
 
-        # convention is x -> target
+        # (x, y, z)
+        # x destroys y on collision
+        # y destroys x if z
         self.colliders = [
-            ("obstacles", "player"),
-            ("player", "coins"),
-            ("player_bullet", "obstacles"),
-            ("obstacles", "player_bullet")
+            ("obstacles", "player", True),
+            ("player", "coins", False),
+            ("player_bullet", "obstacles", True),
+            ("player_bullet", "boss", True),
+            ("boss", "player", False)
         ]
 
     def clear(self):
@@ -73,6 +79,8 @@ class Game:
                 "background": [],
                 "obstacles": [],
                 "player": [],
+                "boss": [],
+                "boss_bullet": [],
                 "player_bullet": [],
                 "coins": []
             }
@@ -96,6 +104,8 @@ class Game:
                                     np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 4)], \
                                         dtype='float64'),
                                     np.array([3, util.randint(3, 10)])).get_items()
+                    elif _ch == "3":
+                        self.objects["boss"].append(self.dragon)
 
                 self.player.move(_ch)
 
@@ -146,6 +156,8 @@ class Game:
                         continue
 
                     obj_t.destroy()
+                    if pairs[2]:
+                        obj_h.destroy()
 
     def __del__(self):
         #util.clear()
