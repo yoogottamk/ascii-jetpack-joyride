@@ -60,3 +60,24 @@ class FireBeam(Obstacle):
         color = util.tup_to_array(rep.shape, (col.Back.RED, col.Fore.YELLOW))
 
         super().__init__(rep, position, np.array([-2., 0.]), util.mask(rep, color))
+
+
+class Magnet(Obstacle):
+    """
+    Manages the magnet obstacle
+    """
+
+    def __init__(self, position, game):
+        """
+        Constructor for Magnet
+
+        Args:
+            position [px, py] : Initial position of the Magnet
+            game (Game)       : The game object
+        """
+
+        self.game = game
+        rep = util.str_to_array(graphics.MAGNET)
+        color = util.tup_to_array(rep.shape, (col.Back.MAGENTA, col.Fore.RED))
+
+        super().__init__(rep, position, np.array([-2., 0.]), color=color)

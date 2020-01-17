@@ -8,7 +8,7 @@ import numpy as np
 from screen import Screen
 from player import Mandalorian, DragonBoss
 from objects import Ground
-from obstacles import FireBeam
+from obstacles import FireBeam, Magnet
 from coins import Coins
 from bullets import MandalorianBullet
 
@@ -39,7 +39,8 @@ class Game:
         # seperate them into different classes
         self.objects = {
             "background": [self.ground],
-            "obstacles": [],
+            "beams": [],
+            "magnets": [],
             "player": [self.player],
             "boss": [],
             "boss_bullet": [],
@@ -51,9 +52,9 @@ class Game:
         # x destroys y on collision
         # y destroys x if z
         self.colliders = [
-            ("obstacles", "player", True),
+            ("beams", "player", True),
             ("player", "coins", False),
-            ("player_bullet", "obstacles", True),
+            ("player_bullet", "beams", True),
             ("player_bullet", "boss", True),
             ("boss", "player", False),
             ("player_bullet", "boss_bullet", True),
@@ -80,7 +81,8 @@ class Game:
 
             tmp_obj = {
                 "background": [],
-                "obstacles": [],
+                "beams": [],
+                "magnets": [],
                 "player": [],
                 "boss": [],
                 "boss_bullet": [],
@@ -100,7 +102,7 @@ class Game:
 
                 if config.DEBUG:
                     if _ch == "1":
-                        self.objects["obstacles"].append(FireBeam( \
+                        self.objects["beams"].append(FireBeam( \
                                 np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 6)], \
                                     dtype='float64')))
                     elif _ch == "2":
@@ -110,6 +112,8 @@ class Game:
                                         dtype='float64'),
                                     np.array([3, util.randint(3, 10)])).get_items()
                     elif _ch == "3":
+                        self.objects["magnets"].append(Magnet(np.array([config.WIDTH, config.MAX_HEIGHT - 4 if np.random.normal() > 0.5 else 0], dtype='float64'), self))
+                    elif _ch == "4":
                         self.objects["boss"].append(self.dragon)
 
                 self.player.move(_ch)
