@@ -135,9 +135,10 @@ class DragonBoss(Player):
 
         player_y = self.game.player.position[1]
 
-        if np.random.random() > 0.9:
+        if np.random.normal() > 0.9:
             self.counter = 0
-            self.game.objects["boss_bullet"].append(DragonBossBullet(self.position + np.array([-2., 3.])))
+            self.game.objects["boss_bullet"].append( \
+                    DragonBossBullet(self.position + np.array([-2., 3.])))
 
         self.position[1] = min(player_y, config.MAX_HEIGHT - self.height)
 

@@ -60,4 +60,7 @@ class Coins:
                 self.coins.append(Coin(np.array((_x, _y), dtype='float64')))
 
     def get_items(self):
+        """
+        Returns all the coins
+        """
         return self.coins
