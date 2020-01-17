@@ -52,14 +52,14 @@ class Mandalorian(Player):
         """
         grid = util.str_to_array(graphics.MANDALORIAN)
         grid_col = util.tup_to_array(grid.shape, (col.Back.BLUE, col.Fore.BLACK))
-        self.controls = ["w", "a", "d"]
         self.init_pos = np.array([10, config.MAX_HEIGHT], dtype='float64')
-        self.shield_active = False
 
         super().__init__(grid, \
                 self.init_pos.copy(),\
                 0.5, grid_col, game)
 
+        self.controls = ["w", "a", "d"]
+        self.shield_active = False
         self.lives = config.MANDALORIAN_LIVES
 
     def move(self, key):
@@ -86,6 +86,8 @@ class Mandalorian(Player):
         if self.shield_active:
             self.deactivate_shield()
             return
+
+        self.position = self.init_pos.copy()
 
         if self.lives > 1:
             self.lives -= 1
@@ -123,10 +125,10 @@ class DragonBoss(Player):
         grid_col = util.tup_to_array(grid.shape, (col.Back.RED, col.Fore.BLACK))
         grid_col = util.mask(grid, grid_col)
 
+        super().__init__(grid, np.array([config.WIDTH - 50, 0], dtype="float64"), 0, grid_col, game)
+
         self.counter = 0
         self.lives = config.DRAGONBOSS_LIVES
-
-        super().__init__(grid, np.array([config.WIDTH - 50, 0], dtype="float64"), 0, grid_col, game)
 
     def update(self):
         self.counter += 1

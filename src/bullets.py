@@ -15,11 +15,11 @@ class Bullet(GameObject):
     Base class for all bullets
     """
 
-    def __init__(self, rep, position, velocity, color, gravity=0.):
+    def __init__(self, rep, position, velocity, color):
         """
         Constructor for Bullet
         """
-        super().__init__(rep, position, velocity, np.array([0., 0.]), gravity, color)
+        super().__init__(rep, position, velocity, np.array([0., 0.]), 0, color)
 
     def update(self):
         """
@@ -61,4 +61,4 @@ class DragonBossBullet(Bullet):
         rep = util.str_to_array(graphics.BOSS_BULLET)
         color = util.tup_to_array(rep.shape, (col.Back.RED, col.Fore.YELLOW))
 
-        super().__init__(rep, position, velocity, color, 0.01)
+        super().__init__(rep, position, velocity, color)
