@@ -57,7 +57,7 @@ class Coins:
 
         for _x in range(minx, maxx):
             for _y in range(miny, maxy):
-                self.coins.append(Coin((_x, _y)))
+                self.coins.append(Coin(np.array((_x, _y), dtype='float64')))
 
     def get_items(self):
         return self.coins
