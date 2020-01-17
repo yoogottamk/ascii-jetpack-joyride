@@ -81,3 +81,15 @@ class Magnet(Obstacle):
         color = util.tup_to_array(rep.shape, (col.Back.MAGENTA, col.Fore.RED))
 
         super().__init__(rep, position, np.array([-2., 0.]), color=color)
+
+    def update(self):
+        """
+        Update obstacle's position and attract Mandalorian
+        """
+        self.position += self.velocity
+
+        diff = np.linalg.norm(self.position - self.game.player.position) + 1
+        
+        self.game.player.velocity += 0.7 * (self.position - self.game.player.position) / diff
+
+        return self.active and self.position[0] + self.width >= 0
