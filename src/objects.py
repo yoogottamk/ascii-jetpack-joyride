@@ -37,6 +37,7 @@ class GameObject:
         self.height = self.rep.shape[0]
         self.color = color
         self.active = True
+        self.lives = 1
 
     def update(self):
         """
@@ -114,7 +115,10 @@ class GameObject:
         """
         Marks this object for destruction
         """
-        self.active = False
+        if self.lives > 1:
+            self.lives -= 1
+        else:
+            self.active = False
 
     def __del__(self):
         """
