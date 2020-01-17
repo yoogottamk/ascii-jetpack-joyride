@@ -99,12 +99,6 @@ class GameObject:
 
         return GameObject(grid, position, velocity, accel, gravity, color)
 
-    def get_object(self):
-        """
-        Added for compatibility with derived classes
-        """
-        return self
-
     def set_color(self, color):
         """
         Changes the color

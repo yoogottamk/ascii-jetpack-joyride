@@ -73,7 +73,7 @@ class Game:
         """
         kb_inp = util.KBHit()
 
-        while True and self.player.get_object().active:
+        while True and self.player.active:
             self.frame_count += 1
             time.sleep(config.DELAY)
             self.score += 10 * config.DELAY
@@ -94,7 +94,9 @@ class Game:
                 if _ch == "q":
                     break
                 if _ch == config.MANDALORIAN_BULLET_CHAR and len(self.objects["player_bullet"]) < config.BULLET_MAX:
-                    self.objects["player_bullet"].append(MandalorianBullet(self.player.get_object().position + np.array([2., 0.])))
+                    self.objects["player_bullet"].append(MandalorianBullet(self.player.position + np.array([2., 0.])))
+                if _ch == config.SHIELD_CHAR:
+                    self.player.activate_shield()
 
                 if config.DEBUG:
                     if _ch == "1":
@@ -119,7 +121,7 @@ class Game:
             for obj_type in self.objects:
                 for obj in self.objects[obj_type]:
                     if obj.update():
-                        self.screen.draw(obj.get_object())
+                        self.screen.draw(obj)
                         tmp_obj[obj_type].append(obj)
 
             self.objects = tmp_obj
@@ -133,7 +135,7 @@ class Game:
         """
         print(f"Score: {int(self.score)}")
         print(f"Time: {time.time() - self.init_time:.2f}")
-        print(f"Lives: {self.player.get_object().lives}")
+        print(f"Lives: {self.player.lives}")
 
     def detect_collisions(self):
         """
@@ -142,8 +144,8 @@ class Game:
         for pairs in self.colliders:
             for hitter in self.objects[pairs[0]]:
                 for target in self.objects[pairs[1]]:
-                    obj_h = hitter.get_object()
-                    obj_t = target.get_object()
+                    obj_h = hitter
+                    obj_t = target
 
                     pos_h = obj_h.position
                     pos_t = obj_t.position

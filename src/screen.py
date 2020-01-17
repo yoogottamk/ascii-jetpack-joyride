@@ -31,7 +31,7 @@ class Screen:
         toggle = toggle // 5
 
         for i in range(0, self.height, 4):
-            for j in range(0, self.width - 10, 6):
+            for j in range(0, self.width - 10, 4):
                 self.display[i][j] = chars[toggle]
                 toggle += 1
 
