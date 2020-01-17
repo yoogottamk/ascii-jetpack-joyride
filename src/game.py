@@ -29,12 +29,12 @@ class Game:
         print("\033[?25l", end='')
 
         self.screen = Screen()
-        self.player = Mandalorian()
+        self.player = Mandalorian(self)
         self.ground = Ground()
-        self.dragon = DragonBoss()
+        self.dragon = DragonBoss(self)
         self.score = 0
-        self.lives = config.INIT_LIVES
         self.init_time = time.time()
+        self.frame_count = 0
 
         # seperate them into different classes
         self.objects = {
@@ -55,14 +55,16 @@ class Game:
             ("player", "coins", False),
             ("player_bullet", "obstacles", True),
             ("player_bullet", "boss", True),
-            ("boss", "player", False)
+            ("boss", "player", False),
+            ("player_bullet", "boss_bullet", True),
+            ("boss_bullet", "player", True)
         ]
 
     def clear(self):
         """
         Clears the screen and the frame
         """
-        self.screen.clear()
+        self.screen.clear(self.frame_count)
         util.clear()
 
     def start(self):
@@ -71,7 +73,8 @@ class Game:
         """
         kb_inp = util.KBHit()
 
-        while True:
+        while True and self.player.get_object().active:
+            self.frame_count += 1
             time.sleep(config.DELAY)
             self.score += 10 * config.DELAY
 
@@ -90,7 +93,7 @@ class Game:
 
                 if _ch == "q":
                     break
-                if _ch == config.MANDALORIAN_BULLET_CHAR:
+                if _ch == config.MANDALORIAN_BULLET_CHAR and len(self.objects["player_bullet"]) < config.BULLET_MAX:
                     self.objects["player_bullet"].append(MandalorianBullet(self.player.get_object().position + np.array([2., 0.])))
 
                 if config.DEBUG:
@@ -130,7 +133,7 @@ class Game:
         """
         print(f"Score: {int(self.score)}")
         print(f"Time: {time.time() - self.init_time:.2f}")
-        print(f"Lives: {self.lives}")
+        print(f"Lives: {self.player.get_object().lives}")
 
     def detect_collisions(self):
         """

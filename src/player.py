@@ -9,13 +9,15 @@ import numpy as np
 from objects import GameObject
 import graphics
 import config
+import util
+from bullets import DragonBossBullet
 
 class Player:
     """
     This is the base class for all "Players": Mandalorian, Dragon
     """
 
-    def __init__(self, rep, position, gravity, color):
+    def __init__(self, rep, position, gravity, color, game):
         """
         Constructor for Player
 
@@ -27,6 +29,7 @@ class Player:
         self.player = GameObject.from_string(rep, position, \
                 np.array([0., 0.]), np.array([0., 0.]), \
                 gravity, color)
+        self.game = game
 
     def move(self, key):
         """
@@ -60,14 +63,15 @@ class Mandalorian(Player):
     This class is for managing the Mandalorian
     """
 
-    def __init__(self):
+    def __init__(self, game):
         """
         Constructor for the Mandalorian
         """
         super().__init__(graphics.MANDALORIAN, \
-                position=np.array([10, config.MAX_HEIGHT], dtype='float64'), \
-                gravity=0.5, color=(col.Back.BLUE, col.Fore.BLACK))
+                np.array([10, config.MAX_HEIGHT], dtype='float64'), \
+                0.5, (col.Back.BLUE, col.Fore.BLACK), game)
         self.controls = ["w", "a", "d"]
+        self.player.lives = config.MANDALORIAN_LIVES
 
     def move(self, key):
         """
@@ -92,8 +96,24 @@ class DragonBoss(Player):
     This class is for managing the Dragon Boss enemy
     """
 
-    def __init__(self):
+    def __init__(self, game):
         """
         Constructor for the Dragon
         """
-        super().__init__(graphics.DRAGON, position=np.array([config.WIDTH - 20, 0]), gravity=0, color=(col.Back.RED, col.Fore.BLACK))
+        self.counter = 0
+        super().__init__(graphics.DRAGON, np.array([config.WIDTH - 50, 0], dtype="float64"), 0, (col.Back.RED, col.Fore.BLACK), game)
+        self.player.lives = config.DRAGONBOSS_LIVES
+
+    def update(self):
+        self.counter += 1
+
+        player_y = self.game.player.get_object().position[1]
+        boss_obj = self.get_object()
+
+        if np.random.random() > 0.9:
+            self.counter = 0
+            self.game.objects["boss_bullet"].append(DragonBossBullet(boss_obj.position + np.array([-2., 3.])))
+
+        boss_obj.position[1] = min(player_y, config.MAX_HEIGHT - boss_obj.height)
+
+        return boss_obj.active
