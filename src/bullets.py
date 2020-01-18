@@ -28,7 +28,6 @@ class Bullet(GameObject):
         Returns:
             bool : draw this bullet in the next frame?
         """
-        self.velocity += self.gravity
         self.position += self.velocity
 
         self.position[1] = min(config.MAX_HEIGHT - self.height, self.position[1])
@@ -56,9 +55,27 @@ class DragonBossBullet(Bullet):
     Class for bullets shot by DragonBoss
     """
 
-    def __init__(self, position):
+    def __init__(self, position, game):
         velocity = np.array([-2., 0.])
         rep = util.str_to_array(graphics.BOSS_BULLET)
         color = util.tup_to_array(rep.shape, (col.Back.RED, col.Fore.YELLOW))
 
+        self.game = game
+
         super().__init__(rep, position, velocity, color)
+
+    def update(self):
+        """
+        Manages the bullet updates which are supposed to follow Mandalorian
+        """
+        y_diff = self.game.player.position[1] - self.position[1]
+
+        self.velocity[1] = int(np.random.normal() > 0.99) * np.sign(y_diff)
+
+        self.position += self.velocity
+
+        self.position[1] = min(config.MAX_HEIGHT - self.height, self.position[1])
+
+        return self.active and \
+            self.position[0] + self.width >= 0 and \
+            self.position[0] + self.width <= config.WIDTH

@@ -124,8 +124,9 @@ class DragonBoss(Player):
         grid = util.str_to_array(graphics.DRAGON)
         grid_col = util.tup_to_array(grid.shape, (col.Back.RED, col.Fore.BLACK))
         grid_col = util.mask(grid, grid_col)
+        self.game = game
 
-        super().__init__(grid, np.array([config.WIDTH - 50, 0], dtype="float64"), 0, grid_col, game)
+        super().__init__(grid, np.array([config.WIDTH - 50, 0], dtype="float64"), 0, grid_col, self.game)
 
         self.counter = 0
         self.lives = config.DRAGONBOSS_LIVES
@@ -135,10 +136,10 @@ class DragonBoss(Player):
 
         player_y = self.game.player.position[1]
 
-        if np.random.normal() > 0.9:
+        if np.random.normal() > 0.99:
             self.counter = 0
             self.game.objects["boss_bullet"].append( \
-                    DragonBossBullet(self.position + np.array([-2., 3.])))
+                    DragonBossBullet(self.position + np.array([-2., 3.]), self.game))
 
         self.position[1] = min(player_y, config.MAX_HEIGHT - self.height)
 
