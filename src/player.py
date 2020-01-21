@@ -14,7 +14,7 @@ from bullets import DragonBossBullet
 
 class Player(GameObject):
     """
-    This is the base class for all "Players": Mandalorian, Dragon
+    This is the base class for all "Players"
     """
 
     def __init__(self, rep, position, gravity, color, game):
@@ -56,7 +56,7 @@ class Mandalorian(Player):
 
         super().__init__(grid, \
                 self.init_pos.copy(),\
-                0.5, grid_col, game)
+                0.45, grid_col, game)
 
         self.controls = ["w", "a", "d"]
         self.shield_active = False
@@ -83,11 +83,12 @@ class Mandalorian(Player):
         """
         Manage destroy for Mandalorian
         """
+        self.position = self.init_pos.copy()
+        self.velocity = np.array([0., 0.])
+
         if self.shield_active:
             self.deactivate_shield()
             return
-
-        self.position = self.init_pos.copy()
 
         if self.lives > 1:
             self.lives -= 1
@@ -144,7 +145,17 @@ class Dragon(Player):
             if key == "w":
                 self.velocity[1] -= 2
 
+    def destroy(self):
+        """
+        Manage destroy for Dragon
+        """
+        self.game.dragon_active = False
+        self.game.objects["player"] = [self.game.player]
+
     def get_rep(self, phase_offset=0):
+        """
+        Returns the live representation of dragon
+        """
         rep = np.full((self.height, self.width), " ")
         color = util.tup_to_array(self.rep.shape, (col.Back.BLACK, col.Fore.GREEN))
 

@@ -90,6 +90,6 @@ class Magnet(Obstacle):
 
         diff = np.linalg.norm(self.position - self.game.player.position) + 1
 
-        self.game.player.velocity += 0.7 * (self.position - self.game.player.position) / diff
+        self.game.player.velocity += 0.3 * (self.position - self.game.player.position) / diff
 
         return self.active and self.position[0] + self.width >= 0

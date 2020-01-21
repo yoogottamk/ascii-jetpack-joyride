@@ -49,6 +49,9 @@ class GameObject:
         is_on_ground = self.position[1] + self.height >= \
                         config.MAX_HEIGHT
 
+        if np.isinf(self.velocity[0]):
+            self.velocity[0] = 0
+
         # simulate drag
         self.accel[0] = ((-1) ** int(self.velocity[0] >= 0)) *\
                 config.DRAG_CONST * (self.velocity[0] ** 2)
@@ -63,7 +66,10 @@ class GameObject:
         if is_on_ground:
             self.velocity[1] = min(0, self.velocity[1])
 
+        np.clip(self.velocity, -5, 5)
+
         tmp_pos = self.position + self.velocity
+
         self.position[0] = int(np.round(np.clip(tmp_pos[0], 0, config.WIDTH - self.width)))
         self.position[1] = int(np.round(np.clip(tmp_pos[1], 0, config.MAX_HEIGHT - self.height)))
 
