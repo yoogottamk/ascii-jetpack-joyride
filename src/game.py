@@ -96,8 +96,10 @@ class Game:
 
                 if _ch == "q":
                     break
-                if _ch == config.MANDALORIAN_BULLET_CHAR and len(self.objects["player_bullet"]) < config.BULLET_MAX:
-                    self.objects["player_bullet"].append(MandalorianBullet(self.player.position + np.array([2., 0.])))
+                if _ch == config.MANDALORIAN_BULLET_CHAR and \
+                        len(self.objects["player_bullet"]) < config.BULLET_MAX:
+                    self.objects["player_bullet"].append( \
+                            MandalorianBullet(self.player.position + np.array([2., 0.])))
                 if _ch == config.SHIELD_CHAR:
                     self.player.activate_shield()
 
@@ -109,11 +111,16 @@ class Game:
                     elif _ch == "2":
                         self.objects["coins"] += \
                                 Coins( \
-                                    np.array([config.WIDTH, util.randint(0, config.MAX_HEIGHT - 4)], \
-                                        dtype='float64'),
+                                    np.array([config.WIDTH, \
+                                        util.randint(0, config.MAX_HEIGHT - 4)], dtype='float64'),
                                     np.array([3, util.randint(3, 10)])).get_items()
                     elif _ch == "3":
-                        self.objects["magnets"].append(Magnet(np.array([config.WIDTH, config.MAX_HEIGHT - 4 if np.random.normal() > 0.5 else 0], dtype='float64'), self))
+                        self.objects["magnets"].append( \
+                                Magnet( \
+                                    np.array([config.WIDTH, config.MAX_HEIGHT - 4 \
+                                                if np.random.normal() > 0.5 else 0], \
+                                            dtype='float64'), \
+                                    self))
                     elif _ch == "4":
                         self.objects["boss"].append(self.dragon_boss)
 

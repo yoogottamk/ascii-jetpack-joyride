@@ -147,10 +147,11 @@ class Dragon(Player):
     def get_rep(self, phase_offset=0):
         rep = np.full((self.height, self.width), " ")
         color = util.tup_to_array(self.rep.shape, (col.Back.BLACK, col.Fore.GREEN))
+
         dragon_head = util.str_to_array(graphics.DRAGON_HEAD)
         head_h, head_w = dragon_head.shape
 
-        phase_offset# = 4 * (phase_offset // 4)
+        #phase_offset = 4 * (phase_offset // 4)
 
         body_width = self.width - head_w
 
@@ -196,7 +197,9 @@ class DragonBoss(Player):
         grid_col = util.mask(grid, grid_col)
         self.game = game
 
-        super().__init__(grid, np.array([config.WIDTH - 50, 0], dtype="float64"), 0, grid_col, self.game)
+        super().__init__(grid, \
+                    np.array([config.WIDTH - 50, 0], dtype="float64"), \
+                    0, grid_col, self.game)
 
         self.counter = 0
         self.lives = config.DRAGONBOSS_LIVES

@@ -16,7 +16,8 @@ class Coin(GameObject):
     def __init__(self, position):
         rep = np.array([["$"]])
         super().__init__(rep, position, np.array([-2., 0.]), \
-                   np.array([0., 0.]), 0, util.tup_to_array((1, 1), (col.Back.YELLOW, col.Fore.RED)))
+                   np.array([0., 0.]), 0, util.tup_to_array((1, 1), \
+                   (col.Back.YELLOW, col.Fore.RED)))
 
     def update(self):
         """
