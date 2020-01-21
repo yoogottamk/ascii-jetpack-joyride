@@ -40,7 +40,7 @@ class Screen:
 
         self.color = util.tup_to_array((self.height, self.width), (config.BG_COL, config.FG_COL))
 
-    def draw(self, obj):
+    def draw(self, obj, frame=0):
         """
         This function places an object on the frame
         """
@@ -52,7 +52,7 @@ class Screen:
         _h = int(_h)
         _w = int(_w)
 
-        disp, color = obj.get_rep()
+        disp, color = obj.get_rep(frame)
 
         disp = disp[:, max(0, -_x):min(config.WIDTH - _x, _w)]
         color = color[:, max(0, -_x):min(config.WIDTH - _x, _w)]

@@ -69,7 +69,7 @@ class GameObject:
 
         return self.active and self.position[0] + self.width >= 0
 
-    def get_rep(self):
+    def get_rep(self, frame=0):
         """
         Sends the string representation of the object
         with color

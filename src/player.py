@@ -22,7 +22,7 @@ class Player(GameObject):
         Constructor for Player
 
         Args:
-            rep (str)         : How does the player look?
+            rep (2D np.array) : How does the player look?
             position [px, py] : Initial position of the Player
             gravity (int)     : Amount of gravity
             color (bg, fg)    : Colors of the player
@@ -110,6 +110,76 @@ class Mandalorian(Player):
         self.shield_active = False
         grid_col = util.tup_to_array(self.rep.shape, (config.BG_COL, config.FG_COL))
         self.set_color(grid_col)
+
+
+class Dragon(Player):
+    """
+    This class is for managing our Dragon
+    """
+
+    def __init__(self, game):
+        """
+        Constructor for the dragon
+        """
+        self.width = 60
+        self.height = 7
+        self.controls = ["w"]
+
+        rep = np.full((self.height, self.width), " ")
+        color = util.tup_to_array((self.height, self.width), (col.Back.BLACK, col.Fore.GREEN))
+
+        super().__init__(rep, np.array([0., config.MAX_HEIGHT - self.height]), 0.3, color, game)
+
+
+    def move(self, key):
+        """
+        Manages movements for the Player
+
+        Args:
+            key (str) : Which key was pressed?
+        """
+        key = key.lower()
+
+        if key in self.controls:
+            if key == "w":
+                self.velocity[1] -= 2
+
+    def get_rep(self, phase_offset=0):
+        rep = np.full((self.height, self.width), " ")
+        color = util.tup_to_array(self.rep.shape, (col.Back.BLACK, col.Fore.GREEN))
+        dragon_head = util.str_to_array(graphics.DRAGON_HEAD)
+        head_h, head_w = dragon_head.shape
+
+        phase_offset# = 4 * (phase_offset // 4)
+
+        body_width = self.width - head_w
+
+        _y = np.sin(np.linspace(-np.pi, np.pi, body_width) + phase_offset)
+        _y *= (self.height / 2)
+        _y += (self.height / 2)
+
+        _y = _y.astype(int)
+
+        for i in range(body_width):
+            rep[_y[i]][i] = "~"
+
+            if _y[i] > self.height - 2:
+                rep[_y[i] - 2][i] = "~"
+            else:
+                rep[_y[i] + 1][i] = "~"
+
+            if _y[i] == 0:
+                rep[2][i] = "~"
+            else:
+                rep[_y[i] - 1][i] = "~"
+
+        beg_h = int(min(_y[-1], self.height - head_h))
+
+        rep[beg_h:beg_h + head_h, -head_w:] = dragon_head
+
+        color = util.mask(rep, color)
+
+        return rep, color
 
 
 class DragonBoss(Player):

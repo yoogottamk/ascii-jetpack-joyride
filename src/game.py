@@ -6,7 +6,7 @@ import time
 import numpy as np
 
 from screen import Screen
-from player import Mandalorian, DragonBoss
+from player import Mandalorian, DragonBoss, Dragon
 from objects import Ground
 from obstacles import FireBeam, Magnet
 from coins import Coins
@@ -25,13 +25,14 @@ class Game:
         Constructor for the Game
         """
 
-        # hide the cursor
-        print("\033[?25l", end='')
+        # hide the cursor and clear the screen
+        print("\033[?25l\033[2J", end='')
 
         self.screen = Screen()
         self.player = Mandalorian(self)
         self.ground = Ground()
-        self.dragon = DragonBoss(self)
+        self.dragon_boss = DragonBoss(self)
+        self.dragon = Dragon(self)
         self.score = 0
         self.init_time = time.time()
         self.frame_count = 0
@@ -41,7 +42,7 @@ class Game:
             "background": [self.ground],
             "beams": [],
             "magnets": [],
-            "player": [self.player],
+            "player": [self.dragon],
             "boss": [],
             "boss_bullet": [],
             "player_bullet": [],
@@ -114,9 +115,11 @@ class Game:
                     elif _ch == "3":
                         self.objects["magnets"].append(Magnet(np.array([config.WIDTH, config.MAX_HEIGHT - 4 if np.random.normal() > 0.5 else 0], dtype='float64'), self))
                     elif _ch == "4":
-                        self.objects["boss"].append(self.dragon)
+                        self.objects["boss"].append(self.dragon_boss)
 
-                self.player.move(_ch)
+                self.dragon.move(_ch)
+            else:
+                kb_inp.clear()
 
             self.clear()
 
@@ -125,7 +128,7 @@ class Game:
             for obj_type in self.objects:
                 for obj in self.objects[obj_type]:
                     if obj.update():
-                        self.screen.draw(obj)
+                        self.screen.draw(obj, self.frame_count)
                         tmp_obj[obj_type].append(obj)
 
             self.objects = tmp_obj
