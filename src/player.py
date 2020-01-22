@@ -112,12 +112,12 @@ class Mandalorian(Player):
         """
         Manage destroy for Mandalorian
         """
+        if self.shield_active:
+            return
+
         self.set_position(self.init_pos.copy())
         self.set_velocity(np.array([0., 0.]))
         lives = self.get_lives()
-
-        if self.shield_active:
-            return
 
         if lives > 1:
             self.decr_lives()
