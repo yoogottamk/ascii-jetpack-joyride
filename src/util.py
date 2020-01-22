@@ -99,13 +99,13 @@ class KBHit:
         Creates a KBHit object that you can call to do various keyboard things.
         """
         # Save the terminal settings
-        self._fd = sys.stdin.fileno()
-        self.new_term = termios.tcgetattr(self._fd)
-        self.old_term = termios.tcgetattr(self._fd)
+        self.__fd = sys.stdin.fileno()
+        self.__new_term = termios.tcgetattr(self.__fd)
+        self.__old_term = termios.tcgetattr(self.__fd)
 
         # New terminal setting unbuffered
-        self.new_term[3] = (self.new_term[3] & ~termios.ICANON & ~termios.ECHO)
-        termios.tcsetattr(self._fd, termios.TCSAFLUSH, self.new_term)
+        self.__new_term[3] = (self.__new_term[3] & ~termios.ICANON & ~termios.ECHO)
+        termios.tcsetattr(self.__fd, termios.TCSAFLUSH, self.__new_term)
 
         # Support normal-terminal reset at exit
         atexit.register(self.set_normal_term)
@@ -115,7 +115,7 @@ class KBHit:
         """
         Resets to normal terminal
         """
-        termios.tcsetattr(self._fd, termios.TCSAFLUSH, self.old_term)
+        termios.tcsetattr(self.__fd, termios.TCSAFLUSH, self.__old_term)
 
 
     @staticmethod
