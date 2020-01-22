@@ -49,6 +49,8 @@ class Game:
         self.last_shield = -1
         self.last_shield_charge = _t
 
+        self.last_boost = -1
+
         self.dragon_active = False
         self.dragon_used = False
 
@@ -110,6 +112,7 @@ class Game:
                 self.boss_mode = True
 
             self.update_shield()
+            self.update_boost()
 
             tmp_obj = {
                 "background": [],
@@ -230,7 +233,7 @@ class Game:
         """
         print(f"Score: {int(self.score)} | Shield: {self.shield_active}|{self.shield_recharging}" + " "*10)
         print(f"Time: {time.time() - self.init_time:.2f} | {self.player.velocity}" + " "*10)
-        print(f"Lives: {self.player.lives} | {self.player.__class__.__name__}" + " "*10)
+        print(f"Lives: {self.player.lives} | {config.BOOST_ACTIVE}" + " "*10)
 
     def detect_collisions(self):
         """
@@ -273,6 +276,7 @@ class Game:
 
     def activate_boost(self):
         config.BOOST_ACTIVE = 0.2
+        self.last_boost = time.time()
 
     def update_shield(self):
         _t = time.time()
@@ -286,6 +290,12 @@ class Game:
                 self.player.deactivate_shield()
                 self.shield_recharging = True
                 self.last_shield_charge = _t
+
+    def update_boost(self):
+        _t = time.time()
+
+        if _t - self.last_boost > config.BOOST_OUT:
+            config.BOOST_ACTIVE = 0
 
     def end_game(self):
         if self.player.lives == 0:
