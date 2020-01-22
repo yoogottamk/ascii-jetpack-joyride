@@ -222,7 +222,7 @@ class Game:
         This function manages shooting bullets in the game
         """
         if self.dragon_active:
-            self.objects[""]
+            self.objects["player_bullet"].append(self.dragon.shoot())
         else:
             self.objects["player_bullet"].append(self.player.shoot())
 

@@ -132,6 +132,7 @@ class Dragon(Player):
         self.width = 60
         self.height = 7
         self.controls = ["w"]
+        self.head = 0
 
         rep = np.full((self.height, self.width), " ")
         color = util.tup_to_array((self.height, self.width), (col.Back.BLACK, col.Fore.GREEN))
@@ -169,7 +170,7 @@ class Dragon(Player):
         dragon_head = util.str_to_array(graphics.DRAGON_HEAD)
         head_h, head_w = dragon_head.shape
 
-        #phase_offset = 4 * (phase_offset // 4)
+        # phase_offset = 4 * (phase_offset // 4)
 
         body_width = self.width - head_w
 
@@ -196,9 +197,17 @@ class Dragon(Player):
 
         rep[beg_h:beg_h + head_h, -head_w:] = dragon_head
 
+        self.head = self.position + beg_h
+
         color = util.mask(rep, color)
 
         return rep, color
+
+    def shoot(self):
+        """
+        Shoots the bullet for Dragon
+        """
+        return MandalorianBullet(self.head + np.array([self.width, 0.]))
 
 
 class DragonBoss(Player):
