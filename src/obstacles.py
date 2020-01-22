@@ -97,9 +97,9 @@ class Magnet(Obstacle):
 
         self.add_position(self.get_velocity())
 
-        diff = np.linalg.norm(self.get_position() - self.game.player.get_position()) + 1
+        diff = np.linalg.norm(self.get_position() - self.game.get_player().get_position()) + 1
 
-        self.game.player.add_velocity(0.3 * (self.get_position() - self.game.player.get_position()) / diff)
+        self.game.get_player().add_velocity(0.3 * (self.get_position() - self.game.get_player().get_position()) / diff)
 
         pos = self.get_position()
         _, _w = self.get_shape()

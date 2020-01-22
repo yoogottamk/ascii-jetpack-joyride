@@ -124,7 +124,7 @@ class Mandalorian(Player):
         else:
             self.decr_lives()
             self.set_active(False)
-            self.game.over = True
+            self.game.set_over()
 
     def activate_shield(self):
         """
@@ -255,13 +255,13 @@ class DragonBoss(Player):
                     0, grid_col, config.DRAGONBOSS_LIVES, self.game)
 
     def update(self):
-        player_y = self.game.player.get_position()[1]
+        player_y = self.game.get_player().get_position()[1]
 
         _h, _ = self.get_shape()
 
         if np.random.normal() > 0.99:
-            self.game.objects["boss_bullet"].append( \
-                    DragonBossBullet(self.get_position() + np.array([-2., 3.]), self.game.player))
+            self.game.add_object("boss_bullet", \
+                DragonBossBullet(self.get_position() + np.array([-2., 3.]), self.game.get_player()))
 
         pos = self.get_position()
         self.set_position([pos[0], min(player_y, config.MAX_HEIGHT - _h)])
@@ -278,5 +278,5 @@ class DragonBoss(Player):
             self.decr_lives()
         else:
             self.set_active(False)
-            self.game.over = True
-            self.game.score += 1000
+            self.game.set_over()
+            self.game.add_score(1000)
