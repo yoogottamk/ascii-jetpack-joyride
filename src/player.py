@@ -239,3 +239,4 @@ class DragonBoss(Player):
         else:
             self.active = False
             self.game.over = True
+            self.game.score += 1000
