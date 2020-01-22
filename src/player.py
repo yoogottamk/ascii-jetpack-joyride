@@ -10,7 +10,7 @@ from objects import GameObject
 import graphics
 import config
 import util
-from bullets import DragonBossBullet
+from bullets import MandalorianBullet, DragonBossBullet
 
 class Player(GameObject):
     """
@@ -78,6 +78,12 @@ class Mandalorian(Player):
                 self.velocity[0] -= 1
             elif key == "d":
                 self.velocity[0] += 1
+
+    def shoot(self):
+        """
+        Shoots a bullet
+        """
+        return MandalorianBullet(self.position + np.array([2., 0.]))
 
     def destroy(self):
         """

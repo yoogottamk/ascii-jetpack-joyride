@@ -222,10 +222,9 @@ class Game:
         This function manages shooting bullets in the game
         """
         if self.dragon_active:
-            pass
+            self.objects[""]
         else:
-            self.objects["player_bullet"].append( \
-                    MandalorianBullet(self.player.position + np.array([2., 0.])))
+            self.objects["player_bullet"].append(self.player.shoot())
 
     def show_score(self):
         """
@@ -251,8 +250,8 @@ class Game:
                     miny = min(pos_h[1], pos_t[1])
                     maxy = max(pos_h[1] + hitter.height, pos_t[1] + target.height)
 
-                    if maxx - minx >= hitter.width + target.width \
-                            or maxy - miny >= hitter.height + target.height:
+                    if maxx - minx >= hitter.width + target.width + 2 \
+                            or maxy - miny >= hitter.height + target.height + 2:
                         continue
 
                     if pairs[1] == "coins":
