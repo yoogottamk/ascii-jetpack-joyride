@@ -28,15 +28,21 @@ class Bullet(GameObject):
         Returns:
             bool : draw this bullet in the next frame?
         """
-        self.velocity[0] += np.sign(self.velocity[0]) * config.BOOST_ACTIVE
+        vel = self.get_velocity()
+        self.add_velocity(np.array([np.sign(vel[0]) * config.BOOST_ACTIVE, 0]))
 
-        self.position += self.velocity
+        self.add_position(self.get_velocity())
 
-        self.position[1] = min(config.MAX_HEIGHT - self.height, self.position[1])
+        pos = self.get_position()
+        _h, _w = self.get_shape()
 
-        return self.active and \
-            self.position[0] + self.width >= 0 and \
-            self.position[0] + self.width <= config.WIDTH
+        self.set_position([pos[0], min(config.MAX_HEIGHT - _h, pos[1])])
+
+        pos = self.get_position()
+
+        return self.get_active() and \
+            pos[0] + _w >= 0 and \
+            pos[0] + _w <= config.WIDTH
 
 
 class MandalorianBullet(Bullet):
@@ -57,12 +63,12 @@ class DragonBossBullet(Bullet):
     Class for bullets shot by DragonBoss
     """
 
-    def __init__(self, position, game):
+    def __init__(self, position, player):
         velocity = np.array([-2., 0.])
         rep = util.str_to_array(graphics.BOSS_BULLET)
         color = util.tup_to_array(rep.shape, (col.Back.RED, col.Fore.YELLOW))
 
-        self.game = game
+        self.player = player
 
         super().__init__(rep, position, velocity, color)
 
@@ -70,17 +76,25 @@ class DragonBossBullet(Bullet):
         """
         Manages the bullet updates which are supposed to follow Mandalorian
         """
+        vel = self.get_velocity()
 
-        self.velocity[0] += np.sign(self.velocity[0]) * config.BOOST_ACTIVE
+        self.add_velocity([np.sign(vel[0]) * config.BOOST_ACTIVE, 0])
 
-        y_diff = self.game.player.position[1] - self.position[1]
+        y_diff = self.player.get_position()[1] - self.get_position()[1]
 
-        self.velocity[1] = int(np.random.normal() > 0.99) * np.sign(y_diff)
+        vel = self.get_velocity()
+        self.set_velocity([vel[0], int(np.random.normal() > 0.99) * np.sign(y_diff)])
 
-        self.position += self.velocity
+        self.add_position(self.get_velocity())
 
-        self.position[1] = min(config.MAX_HEIGHT - self.height, self.position[1])
+        pos = self.get_position()
+        _h, _w = self.get_shape()
 
-        return self.active and \
-            self.position[0] + self.width >= 0 and \
-            self.position[0] + self.width <= config.WIDTH
+        self.set_position([pos[0], min(config.MAX_HEIGHT - _h, pos[1])])
+
+        pos = self.get_position()
+        _h, _w = self.get_shape()
+
+        return self.get_active() and \
+            pos[0] + _w >= 0 and \
+            pos[0] + _w <= config.WIDTH

@@ -28,11 +28,15 @@ class Coin(GameObject):
         Returns:
             bool : Should the object be rendered in the next frame
         """
-        self.velocity[0] += np.sign(self.velocity[0]) * config.BOOST_ACTIVE
+        vel = self.get_velocity()
+        self.add_velocity(np.array([np.sign(vel[0]) * config.BOOST_ACTIVE, 0.]))
 
-        self.position += self.velocity
+        self.add_position(self.get_velocity())
 
-        return self.active and self.position[0] + self.width >= 0
+        pos = self.get_position()
+        _, _w = self.get_shape()
+
+        return self.get_active() and pos[0] + _w >= 0
 
 class Coins:
     """

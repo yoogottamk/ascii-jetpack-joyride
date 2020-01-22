@@ -11,7 +11,6 @@ from player import Mandalorian, DragonBoss, Dragon
 from objects import Ground
 from obstacles import FireBeam, Magnet
 from coins import Coins
-from bullets import MandalorianBullet
 import graphics
 
 import config
@@ -108,6 +107,7 @@ class Game:
             if self.score >= config.BOSS_MIN_SCORE:
                 if not self.boss_mode:
                     self.objects["boss"] = [self.dragon_boss]
+                    self.deactivate_dragon()
 
                 self.boss_mode = True
 
@@ -141,7 +141,7 @@ class Game:
             for obj_type in self.objects:
                 for obj in self.objects[obj_type]:
                     if obj.update():
-                        self.screen.draw(obj, self.frame_count * int(not self.boss_mode))
+                        self.screen.draw(obj, self.frame_count)
                         tmp_obj[obj_type].append(obj)
 
             self.objects = tmp_obj
@@ -193,7 +193,8 @@ class Game:
         """
         if _ch == config.QUIT_CHAR:
             return True
-        elif _ch == config.MANDALORIAN_BULLET_CHAR:
+
+        if _ch == config.MANDALORIAN_BULLET_CHAR:
             self.shoot_bullet()
         elif _ch == config.SHIELD_CHAR and not self.shield_recharging:
             self.player.activate_shield()
@@ -231,8 +232,8 @@ class Game:
         Prints the scoreboard
         """
         print(f"Score: {int(self.score)} | Shield: {self.shield_active}|{self.shield_recharging}" + " "*10)
-        print(f"Time: {time.time() - self.init_time:.2f} | {self.player.velocity}" + " "*10)
-        print(f"Lives: {self.player.lives} | {config.BOOST_ACTIVE}" + " "*10)
+        print(f"Time: {time.time() - self.init_time:.2f}" + " "*10)
+        print(f"Lives: {self.player.get_lives()} | {config.BOOST_ACTIVE}" + " "*10)
 
     def detect_collisions(self):
         """
@@ -241,17 +242,20 @@ class Game:
         for pairs in self.colliders:
             for hitter in self.objects[pairs[0]]:
                 for target in self.objects[pairs[1]]:
-                    pos_h = hitter.position
-                    pos_t = target.position
+                    pos_h = hitter.get_position()
+                    pos_t = target.get_position()
+
+                    height_h, width_h = hitter.get_shape()
+                    height_t, width_t = target.get_shape()
 
                     minx = min(pos_h[0], pos_t[0])
-                    maxx = max(pos_h[0] + hitter.width, pos_t[0] + target.width)
+                    maxx = max(pos_h[0] + width_h, pos_t[0] + width_t)
 
                     miny = min(pos_h[1], pos_t[1])
-                    maxy = max(pos_h[1] + hitter.height, pos_t[1] + target.height)
+                    maxy = max(pos_h[1] + height_h, pos_t[1] + height_t)
 
-                    if maxx - minx >= hitter.width + target.width + 2 \
-                            or maxy - miny >= hitter.height + target.height + 2:
+                    if maxx - minx >= width_h + width_t \
+                            or maxy - miny >= height_h + height_t:
                         continue
 
                     if pairs[1] == "coins":
@@ -273,11 +277,24 @@ class Game:
             self.objects["player"] = [self.dragon]
             self.dragon_active = True
 
+    def deactivate_dragon(self):
+        """
+        Deactivates the dragon
+        """
+        self.dragon_active = False
+        self.objects["player"] = [self.player]
+
     def activate_boost(self):
+        """
+        Activates speed boost
+        """
         config.BOOST_ACTIVE = 0.2
         self.last_boost = time.time()
 
     def update_shield(self):
+        """
+        Manages status of shield
+        """
         _t = time.time()
 
         if self.shield_recharging:
@@ -291,13 +308,19 @@ class Game:
                 self.last_shield_charge = _t
 
     def update_boost(self):
+        """
+        Manages status of speed boost
+        """
         _t = time.time()
 
         if _t - self.last_boost > config.BOOST_OUT:
             config.BOOST_ACTIVE = 0
 
     def end_game(self):
-        if self.player.lives == 0:
+        """
+        Ends the game
+        """
+        if self.player.get_lives() == 0:
             print(graphics.LOST_MSG)
         elif self.over:
             print(graphics.WON_MSG)

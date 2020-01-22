@@ -2,8 +2,8 @@
 This file contains code which runs / manages everything else
 """
 
-import colorama as col
 import warnings
+import colorama as col
 
 from game import Game
 

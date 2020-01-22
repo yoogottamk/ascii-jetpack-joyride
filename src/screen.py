@@ -32,8 +32,8 @@ class Screen:
         """
         This function places an object on the frame
         """
-        _x, _y = obj.position
-        _h, _w = obj.height, obj.width
+        _x, _y = obj.get_position()
+        _h, _w = obj.get_shape()
 
         _x = int(_x)
         _y = int(_y)

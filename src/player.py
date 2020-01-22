@@ -17,7 +17,7 @@ class Player(GameObject):
     This is the base class for all "Players"
     """
 
-    def __init__(self, rep, position, gravity, color, game):
+    def __init__(self, rep, position, gravity, color, lives, game):
         """
         Constructor for Player
 
@@ -26,9 +26,11 @@ class Player(GameObject):
             position [px, py] : Initial position of the Player
             gravity (int)     : Amount of gravity
             color (bg, fg)    : Colors of the player
+            lives (int)       : Number of lives the player has
             game (Game)       : The game object (for accessing other members)
         """
         self.game = game
+        self.__lives = lives
 
         super().__init__(rep, position, np.array([0., 0.]), np.array([0., 0.]), gravity, color)
 
@@ -39,6 +41,28 @@ class Player(GameObject):
         Args:
             key (str) : Which key was pressed?
         """
+
+    def destroy(self):
+        """
+        Checks for lives and destroys
+        """
+        if self.__lives > 1:
+            self.__lives -= 1
+        else:
+            self.__lives = 0
+            self.set_active(False)
+
+    def get_lives(self):
+        """
+        Returns how many lives are left
+        """
+        return self.__lives
+
+    def decr_lives(self):
+        """
+        Reduces the lives by 1
+        """
+        self.__lives -= 1
 
 
 class Mandalorian(Player):
@@ -56,11 +80,10 @@ class Mandalorian(Player):
 
         super().__init__(grid, \
                 self.init_pos.copy(),\
-                0.45, grid_col, game)
+                0.45, grid_col, config.MANDALORIAN_LIVES, game)
 
-        self.controls = ["w", "a", "d"]
+        self.__controls = ["w", "a", "d"]
         self.shield_active = False
-        self.lives = config.MANDALORIAN_LIVES
 
     def move(self, key):
         """
@@ -71,35 +94,36 @@ class Mandalorian(Player):
         """
         key = key.lower()
 
-        if key in self.controls:
+        if key in self.__controls:
             if key == "w":
-                self.velocity[1] -= 2
+                self.add_velocity([0, -2])
             elif key == "a":
-                self.velocity[0] -= 1
+                self.add_velocity([-1, 0])
             elif key == "d":
-                self.velocity[0] += 1
+                self.add_velocity([1, 0])
 
     def shoot(self):
         """
         Shoots a bullet
         """
-        return MandalorianBullet(self.position + np.array([2., 0.]))
+        return MandalorianBullet(self.get_position() + np.array([2., 0.]))
 
     def destroy(self):
         """
         Manage destroy for Mandalorian
         """
-        self.position = self.init_pos.copy()
-        self.velocity = np.array([0., 0.])
+        self.set_position(self.init_pos.copy())
+        self.set_velocity(np.array([0., 0.]))
+        lives = self.get_lives()
 
         if self.shield_active:
             return
 
-        if self.lives > 1:
-            self.lives -= 1
+        if lives > 1:
+            self.decr_lives()
         else:
-            self.lives = 0
-            self.active = False
+            self.decr_lives()
+            self.set_active(False)
             self.game.over = True
 
     def activate_shield(self):
@@ -107,7 +131,7 @@ class Mandalorian(Player):
         Activates shield on the player
         """
         self.shield_active = True
-        grid_col = util.tup_to_array(self.rep.shape, (col.Back.YELLOW, config.FG_COL))
+        grid_col = util.tup_to_array(self.get_shape(), (col.Back.YELLOW, config.FG_COL))
         self.set_color(grid_col)
 
 
@@ -116,7 +140,7 @@ class Mandalorian(Player):
         Deactivates shield on the player
         """
         self.shield_active = False
-        grid_col = util.tup_to_array(self.rep.shape, (config.BG_COL, config.FG_COL))
+        grid_col = util.tup_to_array(self.get_shape(), (config.BG_COL, config.FG_COL))
         self.set_color(grid_col)
 
 
@@ -137,7 +161,7 @@ class Dragon(Player):
         rep = np.full((self.height, self.width), " ")
         color = util.tup_to_array((self.height, self.width), (col.Back.BLACK, col.Fore.GREEN))
 
-        super().__init__(rep, np.array([0., config.MAX_HEIGHT - self.height]), 0.3, color, game)
+        super().__init__(rep, np.array([0., config.MAX_HEIGHT - self.height]), 0.3, color, 1, game)
 
 
     def move(self, key):
@@ -151,32 +175,33 @@ class Dragon(Player):
 
         if key in self.controls:
             if key == "w":
-                self.velocity[1] -= 2
+                self.add_velocity([0, -2])
 
     def destroy(self):
         """
         Manage destroy for Dragon
         """
-        self.game.dragon_active = False
-        self.game.objects["player"] = [self.game.player]
+        self.game.deactivate_dragon()
 
     def get_rep(self, phase_offset=0):
         """
         Returns the live representation of dragon
         """
         rep = np.full((self.height, self.width), " ")
-        color = util.tup_to_array(self.rep.shape, (col.Back.BLACK, col.Fore.GREEN))
+        color = util.tup_to_array(rep.shape, (col.Back.BLACK, col.Fore.GREEN))
 
         dragon_head = util.str_to_array(graphics.DRAGON_HEAD)
         head_h, head_w = dragon_head.shape
 
         # phase_offset = 4 * (phase_offset // 4)
 
-        body_width = self.width - head_w
+        _h, _w = self.get_shape()
+
+        body_width = _w - head_w
 
         _y = np.sin(np.linspace(-np.pi, np.pi, body_width) + phase_offset)
-        _y *= (self.height / 2)
-        _y += (self.height / 2)
+        _y *= (_h / 2)
+        _y += (_h / 2)
 
         _y = _y.astype(int)
 
@@ -197,7 +222,7 @@ class Dragon(Player):
 
         rep[beg_h:beg_h + head_h, -head_w:] = dragon_head
 
-        self.head = self.position + beg_h
+        self.head = self.get_position() + beg_h
 
         color = util.mask(rep, color)
 
@@ -207,7 +232,8 @@ class Dragon(Player):
         """
         Shoots the bullet for Dragon
         """
-        return MandalorianBullet(self.head + np.array([self.width, 0.]))
+        _, _w = self.get_shape()
+        return MandalorianBullet(self.head + np.array([_w, 0.]))
 
 
 class DragonBoss(Player):
@@ -226,32 +252,31 @@ class DragonBoss(Player):
 
         super().__init__(grid, \
                     np.array([config.WIDTH - 50, 0], dtype="float64"), \
-                    0, grid_col, self.game)
-
-        self.counter = 0
-        self.lives = config.DRAGONBOSS_LIVES
+                    0, grid_col, config.DRAGONBOSS_LIVES, self.game)
 
     def update(self):
-        self.counter += 1
+        player_y = self.game.player.get_position()[1]
 
-        player_y = self.game.player.position[1]
+        _h, _ = self.get_shape()
 
         if np.random.normal() > 0.99:
-            self.counter = 0
             self.game.objects["boss_bullet"].append( \
-                    DragonBossBullet(self.position + np.array([-2., 3.]), self.game))
+                    DragonBossBullet(self.get_position() + np.array([-2., 3.]), self.game.player))
 
-        self.position[1] = min(player_y, config.MAX_HEIGHT - self.height)
+        pos = self.get_position()
+        self.set_position([pos[0], min(player_y, config.MAX_HEIGHT - _h)])
 
-        return self.active
+        return self.get_active()
 
     def destroy(self):
         """
         Reduces lives for dragon and end game if its over
         """
-        if self.lives > 1:
-            self.lives -= 1
+        lives = self.get_lives()
+
+        if lives > 1:
+            self.decr_lives()
         else:
-            self.active = False
+            self.set_active(False)
             self.game.over = True
             self.game.score += 1000

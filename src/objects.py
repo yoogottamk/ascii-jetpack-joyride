@@ -28,16 +28,14 @@ class GameObject:
             gravity (float)     : Gravitational accel on that object
             color (2D np.array) : Color of each character
         """
-        self.rep = rep
-        self.position = position
-        self.velocity = velocity
-        self.accel = accel
-        self.gravity = gravity
-        self.width = self.rep.shape[1]
-        self.height = self.rep.shape[0]
-        self.color = color
-        self.active = True
-        self.lives = 1
+        self.__rep = rep
+        self.__position = position
+        self.__velocity = velocity
+        self.__accel = accel
+        self.__gravity = gravity
+        self.__height, self.__width = self.__rep.shape
+        self.__color = color
+        self.__active = True
 
     def update(self):
         """
@@ -46,44 +44,44 @@ class GameObject:
         Returns:
             bool: whether to destroy this object or not
         """
-        is_on_ground = self.position[1] + self.height >= \
+        is_on_ground = self.__position[1] + self.__height >= \
                         config.MAX_HEIGHT
 
-        if np.isinf(self.velocity[0]):
-            self.velocity[0] = 0
+        if np.isinf(self.__velocity[0]):
+            self.__velocity[0] = 0
 
         # simulate drag
-        self.accel[0] = ((-1) ** int(self.velocity[0] >= 0)) *\
-                config.DRAG_CONST * (self.velocity[0] ** 2)
-        self.accel[1] = self.gravity * int(not is_on_ground)
+        self.__accel[0] = ((-1) ** int(self.__velocity[0] >= 0)) *\
+                config.DRAG_CONST * (self.__velocity[0] ** 2)
+        self.__accel[1] = self.__gravity * int(not is_on_ground)
 
         if self.__class__.__name__ != "Mandalorian":
-            self.velocity[0] += np.sign(self.velocity[0]) * config.BOOST_ACTIVE
+            self.__velocity[0] += np.sign(self.__velocity[0]) * config.BOOST_ACTIVE
 
-        self.velocity += self.accel
+        self.__velocity += self.__accel
 
         # if is colliding with roof
-        if self.position[1] == 0:
-            self.velocity[1] = max(0, self.velocity[1])
+        if self.__position[1] == 0:
+            self.__velocity[1] = max(0, self.__velocity[1])
 
         if is_on_ground:
-            self.velocity[1] = min(0, self.velocity[1])
+            self.__velocity[1] = min(0, self.__velocity[1])
 
-        np.clip(self.velocity, -5, 5)
+        np.clip(self.__velocity, -5, 5)
 
-        tmp_pos = self.position + self.velocity
+        tmp_pos = self.__position + self.__velocity
 
-        self.position[0] = int(np.round(np.clip(tmp_pos[0], 0, config.WIDTH - self.width)))
-        self.position[1] = int(np.round(np.clip(tmp_pos[1], 0, config.MAX_HEIGHT - self.height)))
+        self.__position[0] = int(np.round(np.clip(tmp_pos[0], 0, config.WIDTH - self.__width)))
+        self.__position[1] = int(np.round(np.clip(tmp_pos[1], 0, config.MAX_HEIGHT - self.__height)))
 
-        return self.active and self.position[0] + self.width >= 0
+        return self.__active and self.__position[0] + self.__width >= 0
 
     def get_rep(self, frame=0):
         """
         Sends the string representation of the object
         with color
         """
-        return self.rep, self.color
+        return self.__rep, self.__color
 
     @staticmethod
     def from_string(rep, position=np.array([0., 0.]),
@@ -112,17 +110,67 @@ class GameObject:
         """
         Changes the color
         """
-        self.color = color
+        self.__color = color
 
     def destroy(self):
         """
         Marks this object for destruction
         """
-        if self.lives > 1:
-            self.lives -= 1
-        else:
-            self.lives = 0
-            self.active = False
+        self.__active = False
+
+    def get_position(self):
+        """
+        Returns the position
+        """
+        return self.__position
+
+    def set_position(self, pos):
+        """
+        Sets the position
+        """
+        self.__position = pos
+
+    def add_position(self, pos):
+        """
+        Adds to the position
+        """
+        self.__position += pos
+
+    def get_shape(self):
+        """
+        Returns the shape [h, w]
+        """
+        return (self.__height, self.__width)
+
+    def get_velocity(self):
+        """
+        Returns the velocity
+        """
+        return self.__velocity
+
+    def set_velocity(self, vel):
+        """
+        Sets the velocity
+        """
+        self.__velocity = np.array(vel)
+
+    def add_velocity(self, vel):
+        """
+        Adds something to the velocity
+        """
+        self.__velocity += np.array(vel)
+
+    def get_active(self):
+        """
+        Returns whether object is active or not
+        """
+        return self.__active
+
+    def set_active(self, active):
+        """
+        Sets the active state of the object
+        """
+        self.__active = active
 
     def __del__(self):
         """
