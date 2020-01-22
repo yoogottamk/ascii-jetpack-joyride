@@ -101,7 +101,7 @@ class Game:
             time.sleep(config.DELAY)
 
             if not self.boss_mode:
-                self.score += 5 * config.DELAY
+                self.score += 5 * config.DELAY + config.SPEEDOOST_ACTIVE
 
             if self.score >= config.BOSS_MIN_SCORE:
                 if not self.boss_mode:
@@ -289,12 +289,11 @@ class Game:
 
     def end_game(self):
         if self.player.lives == 0:
-            print("YOU LOSE LOL")
+            print(graphics.LOST_MSG)
         elif self.over:
-            print("YOU WIN")
+            print(graphics.WON_MSG)
 
     def __del__(self):
-        # util.clear()
         self.end_game()
         print(col.Style.RESET_ALL)
         print(graphics.BYE)
