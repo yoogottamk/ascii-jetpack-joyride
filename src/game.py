@@ -102,10 +102,8 @@ class Game:
             if self.__over:
                 break
 
-            if self.__frame_count == 1000:
-                self.__frame_count = 0
+            if self.__frame_count == 300:
                 self.__objects["background"].append(Falcon())
-
 
             self.__frame_count += 1
             time.sleep(config.DELAY)
