@@ -272,7 +272,7 @@ class Game:
             self.dragon_active = True
 
     def activate_boost(self):
-        config.BOOST_ACTIVE = 0.5
+        config.BOOST_ACTIVE = 0.2
 
     def update_shield(self):
         _t = time.time()
