@@ -57,6 +57,9 @@ class GameObject:
                 config.DRAG_CONST * (self.velocity[0] ** 2)
         self.accel[1] = self.gravity * int(not is_on_ground)
 
+        if self.__class__.__name__ != "Mandalorian":
+            self.velocity[0] += np.sign(self.velocity[0]) * config.BOOST_ACTIVE
+
         self.velocity += self.accel
 
         # if is colliding with roof
@@ -118,6 +121,7 @@ class GameObject:
         if self.lives > 1:
             self.lives -= 1
         else:
+            self.lives = 0
             self.active = False
 
     def __del__(self):

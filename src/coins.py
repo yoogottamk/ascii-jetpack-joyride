@@ -7,6 +7,7 @@ import colorama as col
 
 from objects import GameObject
 import util
+import config
 
 class Coin(GameObject):
     """
@@ -27,6 +28,8 @@ class Coin(GameObject):
         Returns:
             bool : Should the object be rendered in the next frame
         """
+        self.velocity[0] += np.sign(self.velocity[0]) * config.BOOST_ACTIVE
+
         self.position += self.velocity
 
         return self.active and self.position[0] + self.width >= 0

@@ -20,23 +20,11 @@ class Screen:
         self.width, self.height = config.WIDTH, config.HEIGHT
         self.clear()
 
-    def clear(self, frame=0):
+    def clear(self):
         """
         This function clears the current frame
         """
         self.display = np.full((self.height, self.width), " ")
-
-        chars = [".", "-"]
-        toggle = frame % (5 * len(chars))
-        toggle = toggle // 5
-
-        for i in range(0, self.height, 4):
-            for j in range(0, self.width - 10, 4):
-                self.display[i][j] = chars[toggle]
-                toggle += 1
-
-                if toggle >= len(chars):
-                    toggle = 0
 
         self.color = util.tup_to_array((self.height, self.width), (config.BG_COL, config.FG_COL))
 

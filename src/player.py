@@ -87,13 +87,14 @@ class Mandalorian(Player):
         self.velocity = np.array([0., 0.])
 
         if self.shield_active:
-            self.deactivate_shield()
             return
 
         if self.lives > 1:
             self.lives -= 1
         else:
+            self.lives = 0
             self.active = False
+            self.game.over = True
 
     def activate_shield(self):
         """
@@ -228,3 +229,13 @@ class DragonBoss(Player):
         self.position[1] = min(player_y, config.MAX_HEIGHT - self.height)
 
         return self.active
+
+    def destroy(self):
+        """
+        Reduces lives for dragon and end game if its over
+        """
+        if self.lives > 1:
+            self.lives -= 1
+        else:
+            self.active = False
+            self.game.over = True

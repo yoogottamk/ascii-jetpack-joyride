@@ -4,6 +4,7 @@ This file contains the code which runs the game
 
 import time
 import numpy as np
+import colorama as col
 
 from screen import Screen
 from player import Mandalorian, DragonBoss, Dragon
@@ -11,6 +12,7 @@ from objects import Ground
 from obstacles import FireBeam, Magnet
 from coins import Coins
 from bullets import MandalorianBullet
+import graphics
 
 import config
 import util
@@ -28,6 +30,8 @@ class Game:
         # hide the cursor and clear the screen
         print("\033[?25l\033[2J", end='')
 
+        _t = time.time()
+
         self.screen = Screen()
         self.ground = Ground()
 
@@ -36,17 +40,20 @@ class Game:
         self.dragon_boss = DragonBoss(self)
 
         self.score = 0
-        self.init_time = time.time()
+        self.init_time = _t
 
         self.frame_count = 0
 
-        self.shield_used = False
+        self.shield_active = False
+        self.shield_recharging = True
         self.last_shield = -1
+        self.last_shield_charge = _t
 
         self.dragon_active = False
         self.dragon_used = False
 
         self.boss_mode = False
+        self.over = False
 
         # seperate them into different classes
         self.objects = {
@@ -77,7 +84,7 @@ class Game:
         """
         Clears the screen and the frame
         """
-        self.screen.clear(self.frame_count)
+        self.screen.clear()
         util.clear()
 
     def start(self):
@@ -86,17 +93,23 @@ class Game:
         """
         kb_inp = util.KBHit()
 
-        while True and self.player.active:
+        while True:
+            if self.over:
+                break
+
             self.frame_count += 1
-
             time.sleep(config.DELAY)
-            self.score += 5 * config.DELAY
 
-            if self.score >= 2000:
+            if not self.boss_mode:
+                self.score += 5 * config.DELAY
+
+            if self.score >= config.BOSS_MIN_SCORE:
                 if not self.boss_mode:
                     self.objects["boss"] = [self.dragon_boss]
 
                 self.boss_mode = True
+
+            self.update_shield()
 
             tmp_obj = {
                 "background": [],
@@ -177,14 +190,16 @@ class Game:
         """
         if _ch == config.QUIT_CHAR:
             return True
-        if _ch == config.MANDALORIAN_BULLET_CHAR:
+        elif _ch == config.MANDALORIAN_BULLET_CHAR:
             self.shoot_bullet()
-        if _ch == config.SHIELD_CHAR and not self.shield_used:
+        elif _ch == config.SHIELD_CHAR and not self.shield_recharging:
             self.player.activate_shield()
-            self.shield_used = True
+            self.shield_active = True
             self.last_shield = time.time()
-        if _ch == config.DRAGON_CHAR:
+        elif _ch == config.DRAGON_CHAR:
             self.activate_dragon()
+        elif _ch == config.SPEEDOOST_CHAR:
+            self.activate_boost()
 
         self.move_player(_ch)
 
@@ -213,9 +228,9 @@ class Game:
         """
         Prints the scoreboard
         """
-        print(f"Score: {int(self.score)}")
-        print(f"Time: {time.time() - self.init_time:.2f}")
-        print(f"Lives: {self.player.lives}")
+        print(f"Score: {int(self.score)} | Shield: {self.shield_active}|{self.shield_recharging}" + " "*10)
+        print(f"Time: {time.time() - self.init_time:.2f} | {self.player.velocity}" + " "*10)
+        print(f"Lives: {self.player.lives} | {self.player.__class__.__name__}" + " "*10)
 
     def detect_collisions(self):
         """
@@ -256,8 +271,31 @@ class Game:
             self.objects["player"] = [self.dragon]
             self.dragon_active = True
 
+    def activate_boost(self):
+        config.BOOST_ACTIVE = 0.5
+
+    def update_shield(self):
+        _t = time.time()
+
+        if self.shield_recharging:
+            if _t - self.last_shield_charge > config.SHIELD_CHARGE:
+                self.shield_recharging = False
+        if self.shield_active:
+            if _t - self.last_shield > config.SHIELD_OUT:
+                self.shield_active = False
+                self.player.deactivate_shield()
+                self.shield_recharging = True
+                self.last_shield_charge = _t
+
+    def end_game(self):
+        if self.player.lives == 0:
+            print("YOU LOSE LOL")
+        elif self.over:
+            print("YOU WIN")
+
     def __del__(self):
-        #util.clear()
-        #print(col.Style.RESET_ALL)
-        #print(graphics.BYE)
+        # util.clear()
+        self.end_game()
+        print(col.Style.RESET_ALL)
+        print(graphics.BYE)
         print("\033[?25h")

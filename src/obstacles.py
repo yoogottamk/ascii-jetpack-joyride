@@ -35,6 +35,8 @@ class Obstacle(GameObject):
         Returns:
             bool : Should the object be rendered in the next frame?
         """
+        self.velocity[0] += np.sign(self.velocity[0]) * config.BOOST_ACTIVE
+
         self.position += self.velocity
 
         return self.active and self.position[0] + self.width >= 0
@@ -86,6 +88,8 @@ class Magnet(Obstacle):
         """
         Update obstacle's position and attract Mandalorian
         """
+        self.velocity[0] += np.sign(self.velocity[0]) * config.BOOST_ACTIVE
+
         self.position += self.velocity
 
         diff = np.linalg.norm(self.position - self.game.player.position) + 1

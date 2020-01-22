@@ -28,6 +28,8 @@ class Bullet(GameObject):
         Returns:
             bool : draw this bullet in the next frame?
         """
+        self.velocity[0] += np.sign(self.velocity[0]) * config.BOOST_ACTIVE
+
         self.position += self.velocity
 
         self.position[1] = min(config.MAX_HEIGHT - self.height, self.position[1])
@@ -68,6 +70,9 @@ class DragonBossBullet(Bullet):
         """
         Manages the bullet updates which are supposed to follow Mandalorian
         """
+
+        self.velocity[0] += np.sign(self.velocity[0]) * config.BOOST_ACTIVE
+
         y_diff = self.game.player.position[1] - self.position[1]
 
         self.velocity[1] = int(np.random.normal() > 0.99) * np.sign(y_diff)
