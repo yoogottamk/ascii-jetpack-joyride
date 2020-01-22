@@ -12,6 +12,7 @@ from objects import Ground
 from obstacles import FireBeam, Magnet
 from coins import Coins
 import graphics
+from background import Falcon
 
 import config
 import util
@@ -100,6 +101,11 @@ class Game:
 
             if self.__over:
                 break
+
+            if self.__frame_count == 1000:
+                self.__frame_count = 0
+                self.__objects["background"].append(Falcon())
+
 
             self.__frame_count += 1
             time.sleep(config.DELAY)
