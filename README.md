@@ -32,11 +32,11 @@ python3 main.py
  - `Q` to quit
 
 ### Gameplay
-Collect coins, destroy firebeams to increase your score. Beware of the mighty magnet which pulls you with an enormous force.
+Collect coins, destroy firebeams to increase your score. Of the mighty magnet beware which pulls you with an enormous force.
 
 Press `E` to shoot bullets, `F` to summon the great wriggly dragon onto this world, `<Space>` to activate the shield which will make you invincible for a limited duration (and will also make you glow).
 
-To face the enemy, you must prove your worth by gaining enough points.
+To face the enemy, prove your worth by gaining enough points, you must.
 
 ## Screens
 
@@ -67,7 +67,7 @@ To face the enemy, you must prove your worth by gaining enough points.
 ![Yes](./imgs/yes.png)
 
 ### Background/scenery
- - We have a ground and a sky, and oh, a Millenium Falcon passes by if you are lucky.
+ - We have a ground and a sky, and oh, a Millenium Falcon passes by if you are still alive.
 
 ### Obstacles: FireBeam and Magnet
 ![Yes](./imgs/yes.png)
@@ -86,3 +86,10 @@ To face the enemy, you must prove your worth by gaining enough points.
 
 ### Color
 ![Yes](./imgs/yes.png)
+
+## ASCII art credits
+ - [figlet: random text](http://www.figlet.org/)
+ - [cowsay: dragon](https://web.archive.org/web/20071026043648/http://www.nog.net/~tony/warez/cowsay.shtml)
+ - [The Millenium Falcon](http://www.ascii-art.de/ascii/s/starwars.txt)
+
+I have spoken.
